@@ -1,4 +1,4 @@
-# track CLI
+# track - A Toggl Track personal CLI
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![codecov](https://codecov.io/gh/ulisesantana/track/graph/badge.svg?token=TlQWNm7TqJ)](https://codecov.io/gh/ulisesantana/track)
@@ -155,3 +155,4 @@ Usage
 See code 
 
 <!-- commandsstop -->
+
