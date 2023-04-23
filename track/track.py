@@ -11,7 +11,6 @@ DEFAULT_PROJECT = os.environ.get('TOGGL_DEFAULT_PROJECT')
 def get_current_utc_date():
     return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S") + "+00:00"
 
-
 def sum_durations(entries):
     total_duration = 0
     for entry in entries:
@@ -22,7 +21,6 @@ def sum_durations(entries):
             total_duration += int(time.time()) + duration
     return total_duration
 
-
 def seconds_to_hms_string(seconds):
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -30,12 +28,13 @@ def seconds_to_hms_string(seconds):
 
 
 @click.group()
-def track():
+def cli():
     pass
-
 
 @click.command(name= "continue")
 def restart():
+    """Continue with the last time entry.
+    """
     last_entry, *entries = toggl.get_current_week_entries()
     if last_entry:
         description = last_entry["description"]
@@ -46,9 +45,9 @@ def restart():
             pid=last_entry["pid"],
             start=get_current_utc_date(),
         )
-        print(f"Continuing with '{description}'")
+        click.echo(f"Continuing with '{description}'")
     else:
-        print("Error creating time entry.")
+        click.echo("Error creating time entry.")
 
 
 @click.command()
@@ -60,6 +59,8 @@ def restart():
 )
 @click.argument("description", required=False, default=DEFAULT_TIME_ENTRY)
 def start(description, project):
+    """Start a new time entry.
+    """
     try:
         toggl.create_entry(
             wid=WORKSPACE_ID,
@@ -67,13 +68,15 @@ def start(description, project):
             pid=project,
             start=get_current_utc_date(),
         )
-        print(f"Starting with '{description}'")
+        click.echo(f"Starting with '{description}'")
     except:
-        print("Error creating entry time.")
+        click.echo("Error creating entry time.")
 
 
 @click.command()
 def stop():
+    """Stop running time entry.
+    """
     current_entry = toggl.get_current_entry()
     if current_entry:
         toggl.update_entry(
@@ -81,32 +84,36 @@ def stop():
             wid=current_entry["wid"],
             stop=get_current_utc_date(),
         )
-        print(f"Time entry '{current_entry['description']}' stopped")
+        click.echo(f"Time entry '{current_entry['description']}' stopped")
     else:
-        print("There is no time entry running.")
+        click.echo("There is no time entry running.")
 
 
 @click.command()
 def today():
+    """Show the total time tracked today.
+    """
     # Implementar la función para mostrar el tiempo trackeado hoy
     entries = toggl.get_today_entries()
     duration = sum_durations(entries)
-    print(seconds_to_hms_string(duration))
+    click.echo(seconds_to_hms_string(duration))
 
 
 @click.command()
 def week():
+    """Show the total time tracked this week.
+    """
     # Implementar la función para mostrar el tiempo trackeado hoy
     entries = toggl.get_current_week_entries()
     duration = sum_durations(entries)
-    print(seconds_to_hms_string(duration))
+    click.echo(seconds_to_hms_string(duration))
 
 
-track.add_command(restart)
-track.add_command(start)
-track.add_command(stop)
-track.add_command(today)
-track.add_command(week)
+cli.add_command(restart)
+cli.add_command(start)
+cli.add_command(stop)
+cli.add_command(today)
+cli.add_command(week)
 
 if __name__ == "__main__":
-    track()
+    cli()
