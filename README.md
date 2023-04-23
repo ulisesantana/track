@@ -156,6 +156,22 @@ See code
 
 <!-- commandsstop -->
 
+## How to use
+```shell
+Usage: track [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  continue
+  start
+  stop
+  today
+  week
+```
+
+## Install
 Add to your .zshenv:
 ```env
 export TOGGL_API_TOKEN="email:password"
