@@ -2,10 +2,9 @@ import requests
 import os
 from base64 import b64encode
 from urllib.parse import urlencode
-from pprint import pprint
 import time
 from datetime import datetime, timedelta
-from track import week_helper
+from track import helpers
 
 BASE_URL = "https://api.track.toggl.com/api/v9"
 TOKEN = os.environ.get('TOGGL_API_TOKEN')
@@ -35,6 +34,7 @@ def create_entry(**entry):
         },
         json={**entry, "created_with": "track CLI", "duration": int(time.time()) * -1},
     )
+    print(data.content)
 
 
 def update_entry(**entry):
@@ -49,7 +49,7 @@ def update_entry(**entry):
 
 
 def get_current_week_entries():
-    start, end = week_helper.get_week_dates(datetime.today().date())
+    start, end = helpers.get_week_dates(datetime.today().date())
     query = {
         "start_date": format_to_toggl_date(start),
         "end_date": format_to_toggl_date(end + timedelta(days=1))
@@ -79,13 +79,13 @@ def get_today_entries():
     )
     return data.json()
 
+def get_projects(workspace_id):
+    data = requests.get(
+        f"{BASE_URL}/workspaces/{workspace_id}/projects",
+        headers={
+            "content-type": "application/json",
+            "Authorization": "Basic %s" % API_TOKEN,
+        }
+    )
+    return data.json()
 
-# curl -u <email>:<password> \
-#   -H "Content-Type: application/json" \
-#   -d '{"created_with":"API example code",
-# "pid":null,"tid":null,
-# "description":"Hello Toggl","tags":[],"billable":false,"duration":-1654686174,"wid":1,
-# "at":"1984-06-08T11:02:53.836Z",
-# "start":"1984-06-08T11:02:53.000Z",
-# "stop":null}' \
-#   -X POST https://api.track.toggl.com/api/v9/time_entries
