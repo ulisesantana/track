@@ -20,7 +20,6 @@ def sum_durations(entries):
             total_duration += duration
         else:
             total_duration += int(time.time()) + duration
-            
     return total_duration
 
 
@@ -39,13 +38,17 @@ def track():
 def restart():
     last_entry, *entries = toggl.get_current_week_entries()
     if last_entry:
+        description = last_entry["description"]
         toggl.create_entry(
             id=last_entry["id"],
             wid=last_entry["wid"],
-            description=last_entry["description"],
+            description=description,
             pid=last_entry["pid"],
             start=get_current_utc_date(),
         )
+        print(f"Continuing with '{description}'")
+    else:
+        print("Error creating time entry.")
 
 
 @click.command()
@@ -53,7 +56,7 @@ def restart():
     "--project",
     "-p",
     default=DEFAULT_PROJECT,
-    help="Proyecto al que se asignará la tarea",
+    help="Proyect you want to work with. It's Toggl Project ID",
 )
 @click.argument("description", required=False, default=DEFAULT_TIME_ENTRY)
 def start(description, project):
@@ -64,8 +67,9 @@ def start(description, project):
             pid=project,
             start=get_current_utc_date(),
         )
+        print(f"Starting with '{description}'")
     except:
-        print("Error creando entrada de tiempo.")
+        print("Error creating entry time.")
 
 
 @click.command()
@@ -77,9 +81,9 @@ def stop():
             wid=current_entry["wid"],
             stop=get_current_utc_date(),
         )
-        print("Entrada parada.")
+        print(f"Time entry '{current_entry['description']}' stopped")
     else:
-        print("No hay entrada corriendo.")
+        print("There is no time entry running.")
 
 
 @click.command()
