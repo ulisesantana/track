@@ -40,7 +40,18 @@ def get_week_dates(date):
     
     return start_of_week, end_of_week
 
-def get_project_id_by_name(project, projects):
+def get_project_by_name(project, projects):
     for p in projects:
         if p['name'] == project:
-            return p['id']
+            return p
+
+def get_project_by_id(project_id, projects):
+    for p in projects:
+        if p['id'] == project_id:
+            return p
+        
+def render_time_entry(entry, project):
+    duration = entry['duration']
+    if entry['duration'] < 0:
+        duration = int(time.time()) + entry['duration']
+    return f"{seconds_to_hms_string(duration)} - {entry['description']} ({project['name']})"

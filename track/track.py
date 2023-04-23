@@ -1,6 +1,7 @@
 import click
 from track import toggl, helpers
 import os
+import time
 
 WORKSPACE_ID = int(os.environ.get('TOGGL_WORKSPACE_ID'))
 DEFAULT_PROJECT = int(os.environ.get('TOGGL_DEFAULT_PROJECT'))
@@ -45,8 +46,8 @@ def start(description, project):
         if helpers.is_valid_toggl_id(project):
             projectId = project
         else:
-            projects = toggl.get_projects(WORKSPACE_ID)
-            projectId = helpers.get_project_id_by_name(project, projects)
+            p = toggl.get_project_by_name(WORKSPACE_ID, project)
+            projectId = p['id']
         toggl.create_entry(
             wid=WORKSPACE_ID,
             description=description,
@@ -75,20 +76,34 @@ def stop():
 
 
 @click.command()
+def current():
+    """Show the current time entry.
+    """
+    current_entry = toggl.get_current_entry()
+    if current_entry:
+        duration = int(time.time()) + current_entry['duration']
+        project = toggl.get_project_by_id(WORKSPACE_ID, current_entry['pid'])
+        click.echo(helpers.render_time_entry({**current_entry, "duration": duration}, project))
+    else:
+        click.echo("There is no time entry running.")
+
+@click.command()
 def today():
     """Show the total time tracked today.
     """
-    # Implementar la función para mostrar el tiempo trackeado hoy
     entries = toggl.get_today_entries()
     duration = helpers.sum_durations(entries)
+    projects = toggl.get_projects(WORKSPACE_ID)
     click.echo(helpers.seconds_to_hms_string(duration))
+    for entry in entries:
+        project = helpers.get_project_by_id(entry['pid'], projects)
+        print(f"  - {helpers.render_time_entry(entry,project)}")
 
 
 @click.command()
 def week():
     """Show the total time tracked this week.
     """
-    # Implementar la función para mostrar el tiempo trackeado hoy
     entries = toggl.get_current_week_entries()
     duration = helpers.sum_durations(entries)
     click.echo(helpers.seconds_to_hms_string(duration))
@@ -97,7 +112,6 @@ def week():
 def projects():
     """List projects its Toggl IDs
     """
-    # Implementar la función para mostrar el tiempo trackeado hoy
     projects = toggl.get_projects(WORKSPACE_ID)
     for project in projects:
         print(f"  - {project['name']} ({project['id']})")
@@ -109,6 +123,7 @@ cli.add_command(stop)
 cli.add_command(today)
 cli.add_command(week)
 cli.add_command(projects)
+cli.add_command(current)
 
 if __name__ == "__main__":
     cli()
