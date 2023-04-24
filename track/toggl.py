@@ -90,7 +90,7 @@ def get_projects(workspace_id):
 
 def get_project_by_name(workspace_id, project):
     projects = get_projects(workspace_id)
-    return helpers.get_project_id_by_name(project, projects)
+    return helpers.get_project_by_name(project, projects)
 
 def get_project_by_id(workspace_id, project_id):
     data = requests.get(

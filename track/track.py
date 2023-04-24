@@ -55,7 +55,8 @@ def start(description, project):
             start=helpers.get_current_utc_date(),
         )
         click.echo(f"Starting with '{description}'")
-    except:
+    except Exception as e:
+        print(e)
         click.echo("Error creating entry time.")
 
 
