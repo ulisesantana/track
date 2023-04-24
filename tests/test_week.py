@@ -1,6 +1,7 @@
 import datetime
 from track import helpers
 
+
 def test_get_week_dates():
     monday = datetime.date(2023, 4, 24)
     sunday = datetime.date(2023, 4, 30)

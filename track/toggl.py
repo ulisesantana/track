@@ -10,6 +10,7 @@ BASE_URL = "https://api.track.toggl.com/api/v9"
 TOKEN = os.environ.get('TOGGL_API_TOKEN')
 API_TOKEN = b64encode(TOKEN.encode()).decode("ascii")
 
+
 def format_to_toggl_date(date):
     return date.strftime("%Y-%m-%dT%H:%M:%S") + "+00:00"
 
@@ -26,7 +27,7 @@ def get_current_entry():
 
 
 def create_entry(**entry):
-    data = requests.post(
+    requests.post(
         f"{BASE_URL}/workspaces/{entry['wid']}/time_entries",
         headers={
             "content-type": "application/json",
@@ -62,6 +63,7 @@ def get_current_week_entries():
     )
     return data.json()
 
+
 def get_today_entries():
     today = datetime.today().date()
     tomorrow = today + timedelta(days=1)
@@ -78,6 +80,7 @@ def get_today_entries():
     )
     return data.json()
 
+
 def get_projects(workspace_id):
     data = requests.get(
         f"{BASE_URL}/workspaces/{workspace_id}/projects",
@@ -88,9 +91,11 @@ def get_projects(workspace_id):
     )
     return data.json()
 
+
 def get_project_by_name(workspace_id, project):
     projects = get_projects(workspace_id)
     return helpers.get_project_by_name(project, projects)
+
 
 def get_project_by_id(workspace_id, project_id):
     data = requests.get(
@@ -101,5 +106,3 @@ def get_project_by_id(workspace_id, project_id):
         }
     )
     return data.json()
-
-

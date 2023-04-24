@@ -1,17 +1,25 @@
-import click
-from track import toggl, helpers
 import os
 import time
+
+import click
+
+from track import helpers, toggl
+from track.cases.start_time_entry import StartTimeEntryUseCase
+from track.toggl_repository import TogglRepository
 
 WORKSPACE_ID = int(os.environ.get('TOGGL_WORKSPACE_ID'))
 DEFAULT_PROJECT = int(os.environ.get('TOGGL_DEFAULT_PROJECT'))
 DEFAULT_TIME_ENTRY = os.environ.get('TOGGL_DEFAULT_TIME_ENTRY')
+TOKEN = os.environ.get('TOGGL_API_TOKEN')
+toggl_repository = TogglRepository(workspace_id=WORKSPACE_ID, token=TOKEN)
+
 
 @click.group()
 def cli():
     pass
 
-@click.command(name= "continue")
+
+@click.command(name="continue")
 def restart():
     """Continue with the last time entry.
     """
@@ -43,21 +51,11 @@ def start(description, project):
     """Start a new time entry.
     """
     try:
-        projectId = None
-        if helpers.is_valid_toggl_id(project):
-            projectId = project
-        else:
-            p = toggl.get_project_by_name(WORKSPACE_ID, project)
-            projectId = p['id']
-        toggl.create_entry(
-            wid=WORKSPACE_ID,
-            description=description,
-            pid=projectId,
-            start=helpers.get_current_utc_date(),
-        )
+        start_time_entry = StartTimeEntryUseCase(toggl_repository=toggl_repository)
+        start_time_entry.exec(description, project)
         click.echo(f"Starting with '{description}'")
     except Exception as e:
-        print(e)
+        click.echo(e)
         click.echo("Error creating entry time.")
 
 
@@ -89,6 +87,7 @@ def current():
     else:
         click.echo("There is no time entry running.")
 
+
 @click.command()
 def today():
     """Show the total time tracked today.
@@ -99,7 +98,7 @@ def today():
     click.echo(helpers.seconds_to_hms_string(duration))
     for entry in entries:
         project = helpers.get_project_by_id(entry['pid'], projects)
-        print(f"  - {helpers.render_time_entry(entry,project)}")
+        print(f"  - {helpers.render_time_entry(entry, project)}")
 
 
 @click.command()
@@ -109,6 +108,7 @@ def week():
     entries = toggl.get_current_week_entries()
     duration = helpers.sum_durations(entries)
     click.echo(helpers.seconds_to_hms_string(duration))
+
 
 @click.command()
 def projects():
