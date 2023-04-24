@@ -24,6 +24,11 @@ def seconds_to_hms_string(seconds):
     minutes, seconds = divmod(remainder, 60)
     return f"{hours}h {minutes}m {seconds}s"
 
+def add_zero_prefix(number):
+    if number > 9:
+        return number
+    return f"0{number}"
+
 def get_week_dates(date):
     """
     Function that returns the start and end dates of the week for a given date.
