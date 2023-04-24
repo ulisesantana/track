@@ -34,6 +34,7 @@ def restart():
 @click.option(
     "--project",
     "-p",
+    default=DEFAULT_PROJECT,
     help="Proyect you want to work with. It's a Toggl Project ID or name",
     type=click.UNPROCESSED,
 )
