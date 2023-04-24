@@ -156,20 +156,7 @@ See code
 
 <!-- commandsstop -->
 
-## How to use
-```shell
-Usage: track [OPTIONS] COMMAND [ARGS]...
-
-Options:
-  --help  Show this message and exit.
-
-Commands:
-  continue  Continue with the last time entry.
-  start     Start a new time entry.
-  stop      Stop running time entry.
-  today     Show the total time tracked today.
-  week      Show the total time tracked this week.
-```
+![CLI demostration](docs/demo.png)
 
 ## Install
 Add to your .zshenv:
