@@ -22,7 +22,7 @@ def sum_durations(entries):
 def seconds_to_hms_string(seconds):
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    return f"{hours}h {minutes}m {seconds}s"
+    return f"{add_zero_prefix(hours)}h {add_zero_prefix(minutes)}m {add_zero_prefix(seconds)}s"
 
 def add_zero_prefix(number):
     if number > 9:
