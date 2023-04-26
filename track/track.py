@@ -3,8 +3,13 @@ import os
 import click
 
 from track import helpers, toggl
-from track.cases import ContinueWithLastTimeEntryUseCase, GetCurrentTimeEntryUseCase, \
-    StartTimeEntryUseCase, StopTimeEntryUseCase
+from track.cases import (
+    ContinueWithLastTimeEntryUseCase,
+    GetCurrentTimeEntryUseCase,
+    GetTodayReportUseCase,
+    StartTimeEntryUseCase,
+    StopTimeEntryUseCase
+)
 from track.repositories.toggl_repository import TogglRepository
 
 WORKSPACE_ID = int(os.environ.get('TOGGL_WORKSPACE_ID'))
@@ -81,12 +86,11 @@ def current():
 def today():
     """Show the total time tracked today.
     """
-    entries = toggl.get_today_entries()
-    duration = helpers.sum_durations(entries)
-    projects = toggl.get_projects(WORKSPACE_ID)
+    case = GetTodayReportUseCase(toggl_repository)
+    duration, entries, projects_dict = case.exec()
     click.echo(helpers.seconds_to_hms_string(duration))
     for entry in entries:
-        project = helpers.get_project_by_id(entry['pid'], projects)
+        project = projects_dict[entry['pid']]
         print(f"  - {helpers.render_time_entry(entry, project)}")
 
 

@@ -82,11 +82,14 @@ class TogglRepository:
             f"{self.base_url}/workspaces/{self.workspace_id}/projects",
             headers=self.basic_headers
         )
-        return data.json()
+        project_dict = {}
+        for project in data.json():
+            project_dict[project["id"]] = project
+        return project_dict
 
     def get_project_by_name(self, project):
         projects = self.get_projects()
-        return helpers.get_project_by_name(project, projects)
+        return helpers.get_project_by_name(project, projects.values())
 
     def get_project_by_id(self, project_id):
         data = requests.get(
