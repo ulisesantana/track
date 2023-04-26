@@ -1,15 +1,13 @@
 import re
-from datetime import datetime, timedelta
 import time
+from datetime import timedelta
+
+from .time_helper import TimeHelper
 
 
 def is_valid_toggl_id(input):
     pattern = r'^\d+$'
     return re.match(pattern, input)
-
-
-def get_current_utc_date():
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S") + "+00:00"
 
 
 def sum_durations(entries):
