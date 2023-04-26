@@ -21,6 +21,14 @@ class TogglRepository:
     def format_to_toggl_date(date):
         return date.strftime("%Y-%m-%dT%H:%M:%S") + "+00:00"
 
+    def get_last_entry(self):
+        data = requests.get(
+            f"{self.base_url}/me/time_entries",
+            headers=self.basic_headers,
+        )
+        last_entry, *entries = data.json()
+        return last_entry
+
     def get_current_entry(self):
         data = requests.get(
             f"{self.base_url}/me/time_entries/current",
@@ -29,18 +37,20 @@ class TogglRepository:
         return data.json()
 
     def create_entry(self, **entry):
-        requests.post(
+        data = requests.post(
             f"{self.base_url}/workspaces/{entry['wid']}/time_entries",
             headers=self.basic_headers,
             json={**entry, "created_with": "track CLI", "duration": int(time.time()) * -1},
         )
+        return data.json()
 
     def update_entry(self, **entry):
-        requests.put(
+        data = requests.put(
             f"{self.base_url}/workspaces/{entry['wid']}/time_entries/{entry['id']}",
             headers=self.basic_headers,
             json=entry,
         )
+        return data.json()
 
     def get_current_week_entries(self):
         start, end = helpers.get_week_dates(datetime.today().date())

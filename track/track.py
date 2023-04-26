@@ -1,11 +1,11 @@
 import os
-import time
 
 import click
 
 from track import helpers, toggl
-from track.cases.start_time_entry import StartTimeEntryUseCase
-from track.toggl_repository import TogglRepository
+from track.cases import ContinueWithLastTimeEntryUseCase, GetCurrentTimeEntryUseCase, \
+    StartTimeEntryUseCase, StopTimeEntryUseCase
+from track.repositories.toggl_repository import TogglRepository
 
 WORKSPACE_ID = int(os.environ.get('TOGGL_WORKSPACE_ID'))
 DEFAULT_PROJECT = int(os.environ.get('TOGGL_DEFAULT_PROJECT'))
@@ -23,16 +23,10 @@ def cli():
 def restart():
     """Continue with the last time entry.
     """
-    last_entry, *entries = toggl.get_current_week_entries()
+    case = ContinueWithLastTimeEntryUseCase(toggl_repository)
+    last_entry = case.exec()
     if last_entry:
         description = last_entry["description"]
-        toggl.create_entry(
-            id=last_entry["id"],
-            wid=last_entry["wid"],
-            description=description,
-            pid=last_entry["pid"],
-            start=helpers.get_current_utc_date(),
-        )
         click.echo(f"Continuing with '{description}'")
     else:
         click.echo("Error creating time entry.")
@@ -43,7 +37,7 @@ def restart():
     "--project",
     "-p",
     default=DEFAULT_PROJECT,
-    help="Proyect you want to work with. It's a Toggl Project ID or name",
+    help="Project you want to work with. It's a Toggl Project ID or name",
     type=click.UNPROCESSED,
 )
 @click.argument("description", required=False, default=DEFAULT_TIME_ENTRY)
@@ -51,8 +45,8 @@ def start(description, project):
     """Start a new time entry.
     """
     try:
-        start_time_entry = StartTimeEntryUseCase(toggl_repository=toggl_repository)
-        start_time_entry.exec(description, project)
+        case = StartTimeEntryUseCase(toggl_repository)
+        case.exec(description, project)
         click.echo(f"Starting with '{description}'")
     except Exception as e:
         click.echo(e)
@@ -63,14 +57,10 @@ def start(description, project):
 def stop():
     """Stop running time entry.
     """
-    current_entry = toggl.get_current_entry()
-    if current_entry:
-        toggl.update_entry(
-            id=current_entry["id"],
-            wid=current_entry["wid"],
-            stop=helpers.get_current_utc_date(),
-        )
-        click.echo(f"Time entry '{current_entry['description']}' stopped")
+    case = StopTimeEntryUseCase(toggl_repository)
+    stopped_time_entry = case.exec()
+    if stopped_time_entry:
+        click.echo(f"Time entry '{stopped_time_entry['description']}' stopped")
     else:
         click.echo("There is no time entry running.")
 
@@ -79,11 +69,10 @@ def stop():
 def current():
     """Show the current time entry.
     """
-    current_entry = toggl.get_current_entry()
+    case = GetCurrentTimeEntryUseCase(toggl_repository)
+    current_entry, project = case.exec()
     if current_entry:
-        duration = int(time.time()) + current_entry['duration']
-        project = toggl.get_project_by_id(WORKSPACE_ID, current_entry['pid'])
-        click.echo(helpers.render_time_entry({**current_entry, "duration": duration}, project))
+        click.echo(helpers.render_time_entry(current_entry, project))
     else:
         click.echo("There is no time entry running.")
 
