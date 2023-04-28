@@ -1,37 +1,37 @@
-from unittest.mock import MagicMock
+from unittest.mock import Mock
 
 from tests.mocks import MockTimeHelper
-from track.cases import ContinueWithLastTimeEntryUseCase
-from track.repositories import TogglRepository
+from track.application.cases import ContinueWithLastTimeEntryUseCase
+from track.application.repositories import TimeEntryRepository
+from track.core import TimeEntry
 
 
 def test_continue_with_last_time_entry_use_case_exec():
-    toggl_repository = MagicMock(spec=TogglRepository)
-    last_entry = {
-        "id": 1,
-        "wid": 123,
-        "description": "Test Description",
-        "pid": 456,
-    }
-    toggl_repository.get_last_entry.return_value = last_entry
-    expected = {**last_entry, "start": MockTimeHelper.get_current_utc_date()}
-    toggl_repository.create_entry.return_value = expected
-    case = ContinueWithLastTimeEntryUseCase(toggl_repository, MockTimeHelper)
+    time_entry_repository = Mock(spec=TimeEntryRepository)
+    last_entry = TimeEntry(id=1, wid=123, description="Test Description", pid=456, _duration=60)
+    time_entry_repository.get_last_entry.return_value = last_entry
+    expected_call = dict(start=MockTimeHelper.get_current_utc_date(), id=last_entry.id, wid=last_entry.wid,
+                         description=last_entry.description, pid=last_entry.pid)
+    expected = TimeEntry(id=last_entry.id, wid=last_entry.wid,
+                         description=last_entry.description, pid=last_entry.pid,
+                         _duration=-60)
+    time_entry_repository.create_entry.return_value = expected
+    case = ContinueWithLastTimeEntryUseCase(time_entry_repository, MockTimeHelper)
 
     result = case.exec()
 
     assert result is expected
-    toggl_repository.get_last_entry.assert_called_once()
-    toggl_repository.create_entry.assert_called_with(**expected)
+    time_entry_repository.get_last_entry.assert_called_once()
+    time_entry_repository.create_entry.assert_called_with(**expected_call)
 
 
 def test_continue_with_last_time_entry_use_case_exec_no_last_entry():
-    toggl_repository = MagicMock(spec=TogglRepository)
-    toggl_repository.get_last_entry.return_value = None
-    continue_with_last_time_entry_use_case = ContinueWithLastTimeEntryUseCase(toggl_repository, MockTimeHelper)
+    time_entry_repository = Mock(spec=TimeEntryRepository)
+    time_entry_repository.get_last_entry.return_value = None
+    continue_with_last_time_entry_use_case = ContinueWithLastTimeEntryUseCase(time_entry_repository, MockTimeHelper)
 
     result = continue_with_last_time_entry_use_case.exec()
 
     assert result is None
-    toggl_repository.get_last_entry.assert_called_once()
-    toggl_repository.create_entry.assert_not_called()
+    time_entry_repository.get_last_entry.assert_called_once()
+    time_entry_repository.create_entry.assert_not_called()

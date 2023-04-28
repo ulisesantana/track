@@ -1,4 +1,4 @@
-from track.helpers import TimeHelper
+from track.core.helpers import TimeHelper
 
 
 class MockTimeHelper(TimeHelper):
