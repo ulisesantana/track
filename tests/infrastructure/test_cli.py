@@ -56,13 +56,23 @@ def test_stop(print_mock, time_entry_repository, time_entry):
     print_mock.assert_called_once_with(f"Time entry '{time_entry.description}' stopped")
 
 
-def test_current(print_mock, time_entry_repository, time_entry):
+def test_current_successfully(print_mock, time_entry_repository, time_entry, project):
     time_entry_repository.get_current_entry.return_value = time_entry
+    time_entry_repository.get_project_by_id.return_value = project
     track_cli = TrackCLI(time_entry_repository, print_mock)
 
     track_cli.current()
 
-    print_mock.assert_called_once()
+    print_mock.assert_called_once_with(f"00h 01m 00s - {time_entry.description} ({project.name})")
+
+
+def test_current_with_no_current_entry(print_mock, time_entry_repository, time_entry):
+    time_entry_repository.get_current_entry.return_value = None
+    track_cli = TrackCLI(time_entry_repository, print_mock)
+
+    track_cli.current()
+
+    print_mock.assert_called_once_with("There is no time entry running.")
 
 
 def test_today(print_mock, time_entry_repository, time_entry, project):
