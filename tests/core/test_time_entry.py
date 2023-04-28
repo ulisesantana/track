@@ -19,7 +19,6 @@ def test_time_entry_str():
     expected_str = "01h 00m 00s - Prueba de descripción"
     assert str(time_entry) == expected_str
 
-    time_entry.duration = int(3665 - time.time())  # 01:01:05
-    print(time_entry.duration)
+    time_entry.duration = int(time.time() - 3665) * -1
     expected_str = "01h 01m 05s - Prueba de descripción"
     assert str(time_entry) == expected_str
