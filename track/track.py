@@ -2,21 +2,15 @@ import os
 
 import click
 
-from track import helpers, toggl
-from track.cases import (
-    ContinueWithLastTimeEntryUseCase,
-    GetCurrentTimeEntryUseCase,
-    GetTodayReportUseCase,
-    StartTimeEntryUseCase,
-    StopTimeEntryUseCase
-)
-from track.repositories.toggl_repository import TogglRepository
+from track.infrastructure.cli import TrackCLI
+from track.infrastructure.repositories import TogglRepository
 
 WORKSPACE_ID = int(os.environ.get('TOGGL_WORKSPACE_ID'))
 DEFAULT_PROJECT = int(os.environ.get('TOGGL_DEFAULT_PROJECT'))
 DEFAULT_TIME_ENTRY = os.environ.get('TOGGL_DEFAULT_TIME_ENTRY')
 TOKEN = os.environ.get('TOGGL_API_TOKEN')
 toggl_repository = TogglRepository(workspace_id=WORKSPACE_ID, token=TOKEN)
+track_cli = TrackCLI(time_entry_repository=toggl_repository, print=click.echo)
 
 
 @click.group()
@@ -28,13 +22,7 @@ def cli():
 def restart():
     """Continue with the last time entry.
     """
-    case = ContinueWithLastTimeEntryUseCase(toggl_repository)
-    last_entry = case.exec()
-    if last_entry:
-        description = last_entry["description"]
-        click.echo(f"Continuing with '{description}'")
-    else:
-        click.echo("Error creating time entry.")
+    track_cli.restart()
 
 
 @click.command()
@@ -49,67 +37,35 @@ def restart():
 def start(description, project):
     """Start a new time entry.
     """
-    try:
-        case = StartTimeEntryUseCase(toggl_repository)
-        case.exec(description, project)
-        click.echo(f"Starting with '{description}'")
-    except Exception as e:
-        click.echo(e)
-        click.echo("Error creating entry time.")
+    track_cli.start(description, project)
 
 
 @click.command()
 def stop():
     """Stop running time entry.
     """
-    case = StopTimeEntryUseCase(toggl_repository)
-    stopped_time_entry = case.exec()
-    if stopped_time_entry:
-        click.echo(f"Time entry '{stopped_time_entry['description']}' stopped")
-    else:
-        click.echo("There is no time entry running.")
+    track_cli.stop()
 
 
 @click.command()
 def current():
     """Show the current time entry.
     """
-    case = GetCurrentTimeEntryUseCase(toggl_repository)
-    current_entry, project = case.exec()
-    if current_entry:
-        click.echo(helpers.render_time_entry(current_entry, project))
-    else:
-        click.echo("There is no time entry running.")
+    track_cli.current()
 
 
 @click.command()
 def today():
     """Show the total time tracked today.
     """
-    case = GetTodayReportUseCase(toggl_repository)
-    duration, entries, projects_dict = case.exec()
-    click.echo(helpers.seconds_to_hms_string(duration))
-    for entry in entries:
-        project = projects_dict[entry['pid']]
-        print(f"  - {helpers.render_time_entry(entry, project)}")
+    track_cli.today()
 
 
 @click.command()
 def week():
     """Show the total time tracked this week.
     """
-    entries = toggl.get_current_week_entries()
-    duration = helpers.sum_durations(entries)
-    click.echo(helpers.seconds_to_hms_string(duration))
-
-
-@click.command()
-def projects():
-    """List projects its Toggl IDs
-    """
-    projects = toggl.get_projects(WORKSPACE_ID)
-    for project in projects:
-        print(f"  - {project['name']} ({project['id']})")
+    track_cli.week()
 
 
 cli.add_command(restart)
@@ -117,7 +73,6 @@ cli.add_command(start)
 cli.add_command(stop)
 cli.add_command(today)
 cli.add_command(week)
-cli.add_command(projects)
 cli.add_command(current)
 
 if __name__ == "__main__":
