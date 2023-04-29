@@ -20,11 +20,15 @@ class TrackCLI:
     def restart(self):
         """Continue with the last time entry.
         """
-        case = ContinueWithLastTimeEntryUseCase(self.time_entry_repository)
-        last_entry = case.exec()
-        if last_entry:
-            self.print(f"Continuing with '{last_entry.description}'")
-        else:
+        try:
+            case = ContinueWithLastTimeEntryUseCase(self.time_entry_repository)
+            last_entry = case.exec()
+            if last_entry:
+                self.print(f"Continuing with '{last_entry.description}'")
+            else:
+                self.print("There is no time entry to continue with.")
+        except Exception as e:
+            self.print(e)
             self.print("Error creating time entry.")
 
     def start(self, description, project):
@@ -36,7 +40,7 @@ class TrackCLI:
             self.print(f"Starting with '{description}'")
         except Exception as e:
             self.print(e)
-            self.print("Error creating entry time.")
+            self.print("Error creating time entry.")
 
     def stop(self):
         """Stop running time entry.
