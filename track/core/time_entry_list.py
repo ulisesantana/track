@@ -13,3 +13,12 @@ class TimeEntryList:
         for entry in self.values:
             total_duration += entry.duration
         return total_duration
+
+    def group_entries_by_description(self):
+        grouped_entries = {}
+        for entry in self.values:
+            if entry.description in grouped_entries:
+                grouped_entries[entry.description].duration += entry.duration
+            else:
+                grouped_entries[entry.description] = entry
+        return grouped_entries.values()
