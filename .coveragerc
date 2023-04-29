@@ -2,3 +2,5 @@
 exclude_lines =
     ^\s*pass\s*$
     @abstractmethod
+    if __name__ == "__main__":
+
