@@ -1,19 +1,6 @@
 # track - A toggl Track personal CLI
 
-```shell
-Usage: track [OPTIONS] COMMAND [ARGS]...
-
-Options:
-  --help  Show this message and exit.
-
-Commands:
-  continue  Continue with the last time entry.
-  current   Show the current time entry.
-  start     Start a new time entry.
-  stop      Stop running time entry.
-  today     Show the total time tracked today.
-  week      Show the total time tracked this week.
-```
+![Use demonstration](docs/demo.png)
 
 ## Install
 Add to your .zshenv:
