@@ -13,7 +13,7 @@ class Renderer:
     @staticmethod
     def render_report(entries: TimeEntryList, projects_dict: Dict[int, Project]) -> str:
         report = TimeHelper.seconds_to_hms_string(entries.get_total_duration())
-        for entry in entries.values:
+        for entry in entries.group_entries_by_description():
             project = projects_dict[entry.pid]
             report += f"\n  - {Renderer.render_time_entry(entry, project)}"
         return report

@@ -122,8 +122,7 @@ def test_today_command(print_mock, time_entry_repository, time_entry, project):
     track_cli.today()
 
     print_mock.assert_called_once_with("""00h 02m 00s
-  - 00h 01m 00s - Test Description (Test Project)
-  - 00h 01m 00s - Test Description (Test Project)""")
+  - 00h 02m 00s - Test Description (Test Project)""")
 
 
 def test_week_command(print_mock, time_entry_repository, time_entry, project):
@@ -136,5 +135,4 @@ def test_week_command(print_mock, time_entry_repository, time_entry, project):
     track_cli.week()
 
     print_mock.assert_called_once_with("""00h 02m 00s
-  - 00h 01m 00s - Test Description (Test Project)
-  - 00h 01m 00s - Test Description (Test Project)""")
+  - 00h 02m 00s - Test Description (Test Project)""")
