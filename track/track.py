@@ -1,15 +1,10 @@
-import os
-
 import click
 
+from track.infrastructure import Config
 from track.infrastructure.cli import TrackCLI
 from track.infrastructure.repositories import TogglRepository
 
-WORKSPACE_ID = int(os.environ.get('TOGGL_WORKSPACE_ID'))
-DEFAULT_PROJECT = int(os.environ.get('TOGGL_DEFAULT_PROJECT'))
-DEFAULT_TIME_ENTRY = os.environ.get('TOGGL_DEFAULT_TIME_ENTRY')
-TOKEN = os.environ.get('TOGGL_API_TOKEN')
-toggl_repository = TogglRepository(workspace_id=WORKSPACE_ID, token=TOKEN)
+toggl_repository = TogglRepository(workspace_id=Config.get_workspace_id(), token=Config.get_token())
 track_cli = TrackCLI(time_entry_repository=toggl_repository, print=click.echo)
 
 
@@ -29,11 +24,11 @@ def restart():
 @click.option(
     "--project",
     "-p",
-    default=DEFAULT_PROJECT,
+    default=Config.get_default_project(),
     help="Project you want to work with. It's a Toggl Project ID or name",
     type=click.UNPROCESSED,
 )
-@click.argument("description", required=False, default=DEFAULT_TIME_ENTRY)
+@click.argument("description", required=False, default=Config.get_default_time_entry())
 def start(description, project):
     """Start a new time entry.
     """
