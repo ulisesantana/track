@@ -29,7 +29,7 @@ def project(time_entry):
     return Project(id=time_entry.pid, name="Test Project")
 
 
-def test_restart(time_entry_repository, print_mock, time_entry):
+def test_restart_command(time_entry_repository, print_mock, time_entry):
     time_entry_repository.get_last_entry.return_value = time_entry
     time_entry_repository.create_entry.return_value = time_entry
     track_cli = TrackCLI(time_entry_repository, print_mock)
@@ -39,7 +39,26 @@ def test_restart(time_entry_repository, print_mock, time_entry):
     print_mock.assert_called_with(f"Continuing with '{time_entry.description}'")
 
 
-def test_start(print_mock, time_entry_repository, time_entry, project):
+def test_restart_command_with_no_last_entry(time_entry_repository, print_mock, time_entry):
+    time_entry_repository.get_last_entry.return_value = None
+    track_cli = TrackCLI(time_entry_repository, print_mock)
+
+    track_cli.restart()
+
+    print_mock.assert_called_with("There is no time entry to continue with.")
+
+
+def test_restart_command_with_error_creating_entry(time_entry_repository, print_mock, time_entry):
+    time_entry_repository.get_last_entry.return_value = time_entry
+    time_entry_repository.create_entry.side_effect = ValueError("Boom!! 💥")
+    track_cli = TrackCLI(time_entry_repository, print_mock)
+
+    track_cli.restart()
+
+    print_mock.assert_called_with("Error creating time entry.")
+
+
+def test_start_command(print_mock, time_entry_repository, time_entry, project):
     track_cli = TrackCLI(time_entry_repository, print_mock)
 
     track_cli.start(time_entry.description, project)
@@ -47,7 +66,16 @@ def test_start(print_mock, time_entry_repository, time_entry, project):
     print_mock.assert_called_once_with(f"Starting with '{time_entry.description}'")
 
 
-def test_stop(print_mock, time_entry_repository, time_entry):
+def test_start_command_with_error_creating_entry(print_mock, time_entry_repository, time_entry, project):
+    time_entry_repository.create_entry.side_effect = ValueError("Boom!! 💥")
+    track_cli = TrackCLI(time_entry_repository, print_mock)
+
+    track_cli.start(time_entry.description, project)
+
+    print_mock.assert_called_with("Error creating time entry.")
+
+
+def test_stop_command(print_mock, time_entry_repository, time_entry):
     time_entry_repository.update_entry.return_value = time_entry
     track_cli = TrackCLI(time_entry_repository, print_mock)
 
@@ -56,7 +84,16 @@ def test_stop(print_mock, time_entry_repository, time_entry):
     print_mock.assert_called_once_with(f"Time entry '{time_entry.description}' stopped")
 
 
-def test_current_successfully(print_mock, time_entry_repository, time_entry, project):
+def test_stop_command_with_no_current_entry(print_mock, time_entry_repository, time_entry):
+    time_entry_repository.get_current_entry.return_value = None
+    track_cli = TrackCLI(time_entry_repository, print_mock)
+
+    track_cli.stop()
+
+    print_mock.assert_called_once_with("There is no time entry running.")
+
+
+def test_current_command_successfully(print_mock, time_entry_repository, time_entry, project):
     time_entry_repository.get_current_entry.return_value = time_entry
     time_entry_repository.get_project_by_id.return_value = project
     track_cli = TrackCLI(time_entry_repository, print_mock)
@@ -66,7 +103,7 @@ def test_current_successfully(print_mock, time_entry_repository, time_entry, pro
     print_mock.assert_called_once_with(f"00h 01m 00s - {time_entry.description} ({project.name})")
 
 
-def test_current_with_no_current_entry(print_mock, time_entry_repository, time_entry):
+def test_current_command_with_no_current_entry(print_mock, time_entry_repository, time_entry):
     time_entry_repository.get_current_entry.return_value = None
     track_cli = TrackCLI(time_entry_repository, print_mock)
 
@@ -75,7 +112,7 @@ def test_current_with_no_current_entry(print_mock, time_entry_repository, time_e
     print_mock.assert_called_once_with("There is no time entry running.")
 
 
-def test_today(print_mock, time_entry_repository, time_entry, project):
+def test_today_command(print_mock, time_entry_repository, time_entry, project):
     entries = TimeEntryList([time_entry, time_entry])
     projects_dict = dict([(project.id, project)])
     time_entry_repository.get_today_entries.return_value = entries
@@ -89,7 +126,7 @@ def test_today(print_mock, time_entry_repository, time_entry, project):
   - 00h 01m 00s - Test Description (Test Project)""")
 
 
-def test_week(print_mock, time_entry_repository, time_entry, project):
+def test_week_command(print_mock, time_entry_repository, time_entry, project):
     entries = TimeEntryList([time_entry, time_entry])
     projects_dict = dict([(project.id, project)])
     time_entry_repository.get_current_week_entries.return_value = entries
