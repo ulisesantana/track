@@ -1,1 +1,2 @@
-from .toggl_repository import TogglRepository
+from .toggl_time_entry_repository import TogglTimeEntryRepository
+from .toggl_project_repository import TogglProjectRepository

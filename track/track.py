@@ -2,10 +2,11 @@ import click
 
 from track.infrastructure import Config
 from track.infrastructure.cli import TrackCLI
-from track.infrastructure.repositories import TogglRepository
+from track.infrastructure.repositories import TogglTimeEntryRepository, TogglProjectRepository
 
-toggl_repository = TogglRepository(workspace_id=Config.get_workspace_id(), token=Config.get_token())
-track_cli = TrackCLI(time_entry_repository=toggl_repository, print=click.echo)
+time_entry_repository = TogglTimeEntryRepository(workspace_id=Config.get_workspace_id(), token=Config.get_token())
+project_repository = TogglProjectRepository(workspace_id=Config.get_workspace_id(), token=Config.get_token())
+track_cli = TrackCLI(time_entry_repository=time_entry_repository, project_repository=project_repository, print=click.echo)
 
 
 @click.group()
