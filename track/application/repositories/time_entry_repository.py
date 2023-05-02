@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Dict
 
-from track.core import Project, TimeEntry, TimeEntryList
+from track.core import TimeEntry, TimeEntryList
 
 
 class TimeEntryRepository(ABC):
@@ -29,16 +28,4 @@ class TimeEntryRepository(ABC):
 
     @abstractmethod
     def get_today_entries(self) -> TimeEntryList:
-        pass
-
-    @abstractmethod
-    def get_projects(self) -> Dict[int, Project]:
-        pass
-
-    @abstractmethod
-    def get_project_by_id(self, id: int) -> Project:
-        pass
-
-    @abstractmethod
-    def get_project_by_name(self, name: str) -> Project:
         pass

@@ -1,13 +1,13 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import Mock, patch
 
-from track.core import Project, TimeEntry, TimeEntryList
-from track.infrastructure.repositories import TogglRepository
+from track.core import TimeEntry, TimeEntryList
+from track.infrastructure.repositories import TogglTimeEntryRepository
 
 
 def test_get_last_entry():
     with patch('requests.get') as mocked_get:
         # Mock the response for the GET request
-        mocked_response = MagicMock()
+        mocked_response = Mock()
         mocked_response.json.return_value = [
             {
                 "id": 1,
@@ -19,7 +19,7 @@ def test_get_last_entry():
         ]
         mocked_get.return_value = mocked_response
 
-        repository = TogglRepository(workspace_id=123, token='test-token')
+        repository = TogglTimeEntryRepository(workspace_id=123, token='test-token')
         last_entry = repository.get_last_entry()
         assert isinstance(last_entry, TimeEntry)
         assert last_entry.id == 1
@@ -29,7 +29,7 @@ def test_get_last_entry():
 def test_get_current_entry():
     with patch('requests.get') as mocked_get:
         # Mock the response for the GET request
-        mocked_response = MagicMock()
+        mocked_response = Mock()
         mocked_response.json.return_value = {
             "id": 2,
             "wid": 123,
@@ -39,7 +39,7 @@ def test_get_current_entry():
         }
         mocked_get.return_value = mocked_response
 
-        repository = TogglRepository(workspace_id=123, token='test-token')
+        repository = TogglTimeEntryRepository(workspace_id=123, token='test-token')
         current_entry = repository.get_current_entry()
         assert isinstance(current_entry, TimeEntry)
         assert current_entry.id == 2
@@ -49,7 +49,7 @@ def test_get_current_entry():
 def test_create_entry():
     with patch('requests.post') as mocked_post:
         # Mock the response for the POST request
-        mocked_response = MagicMock()
+        mocked_response = Mock()
         mocked_response.json.return_value = {
             "id": 3,
             "wid": 123,
@@ -59,7 +59,7 @@ def test_create_entry():
         }
         mocked_post.return_value = mocked_response
 
-        repository = TogglRepository(workspace_id=123, token='test-token')
+        repository = TogglTimeEntryRepository(workspace_id=123, token='test-token')
         created_entry = repository.create_entry(wid=123, pid=789, description="New entry")
         assert isinstance(created_entry, TimeEntry)
         assert created_entry.id == 3
@@ -69,7 +69,7 @@ def test_create_entry():
 def test_update_entry():
     with patch('requests.put') as mocked_put:
         # Mock the response for the PUT request
-        mocked_response = MagicMock()
+        mocked_response = Mock()
         mocked_response.json.return_value = {
             "id": 4,
             "wid": 123,
@@ -79,7 +79,7 @@ def test_update_entry():
         }
         mocked_put.return_value = mocked_response
 
-        repository = TogglRepository(workspace_id=123, token='test-token')
+        repository = TogglTimeEntryRepository(workspace_id=123, token='test-token')
         updated_entry = repository.update_entry(id=4, wid=123, pid=456, description="Updated entry", duration=900)
         assert isinstance(updated_entry, TimeEntry)
         assert updated_entry.id == 4
@@ -89,7 +89,7 @@ def test_update_entry():
 def test_get_current_week_entries():
     with patch('requests.get') as mocked_get:
         # Mock the response for the GET request
-        mocked_response = MagicMock()
+        mocked_response = Mock()
         mocked_response.json.return_value = [
             {
                 "id": 5,
@@ -108,7 +108,7 @@ def test_get_current_week_entries():
         ]
         mocked_get.return_value = mocked_response
 
-        repository = TogglRepository(workspace_id=123, token='test-token')
+        repository = TogglTimeEntryRepository(workspace_id=123, token='test-token')
         week_entries = repository.get_current_week_entries()
         assert isinstance(week_entries, TimeEntryList)
         assert len(week_entries.values) == 2
@@ -119,7 +119,7 @@ def test_get_current_week_entries():
 def test_get_today_entries():
     with patch('requests.get') as mocked_get:
         # Mock the response for the GET request
-        mocked_response = MagicMock()
+        mocked_response = Mock()
         mocked_response.json.return_value = [
             {
                 "id": 7,
@@ -138,72 +138,9 @@ def test_get_today_entries():
         ]
         mocked_get.return_value = mocked_response
 
-        repository = TogglRepository(workspace_id=123, token='test-token')
+        repository = TogglTimeEntryRepository(workspace_id=123, token='test-token')
         today_entries = repository.get_today_entries()
         assert isinstance(today_entries, TimeEntryList)
         assert len(today_entries.values) == 2
         assert today_entries.values[0].id == 7
         assert today_entries.values[1].id == 8
-
-
-def test_get_projects():
-    with patch('requests.get') as mocked_get:
-        # Mock the response for the GET request
-        mocked_response = MagicMock()
-        mocked_response.json.return_value = [
-            {
-                "id": 456,
-                "name": "Test project",
-            },
-            {
-                "id": 789,
-                "name": "Test project 2",
-            }
-        ]
-        mocked_get.return_value = mocked_response
-
-        repository = TogglRepository(workspace_id=123, token='test-token')
-        projects = repository.get_projects()
-        assert len(projects) == 2
-        assert isinstance(projects[456], Project)
-        assert projects[456].name == 'Test project'
-
-
-def test_get_project_by_id():
-    with patch('requests.get') as mocked_get:
-        # Mock the response for the GET request
-        mocked_response = MagicMock()
-        mocked_response.json.return_value = {
-            "id": 456,
-            "name": "Test project",
-        }
-        mocked_get.return_value = mocked_response
-
-        repository = TogglRepository(workspace_id=123, token='test-token')
-        project = repository.get_project_by_id(456)
-        assert isinstance(project, Project)
-        assert project.id == 456
-        assert project.name == 'Test project'
-
-
-def test_get_project_by_name():
-    with patch('requests.get') as mocked_get:
-        # Mock the response for the GET request
-        mocked_response = MagicMock()
-        mocked_response.json.return_value = [
-            {
-                "id": 456,
-                "name": "Test project",
-            },
-            {
-                "id": 789,
-                "name": "Test project 2",
-            }
-        ]
-        mocked_get.return_value = mocked_response
-
-        repository = TogglRepository(workspace_id=123, token='test-token')
-        project = repository.get_project_by_name("Test project 2")
-        assert isinstance(project, Project)
-        assert project.id == 789
-        assert project.name == 'Test project 2'

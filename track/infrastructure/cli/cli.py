@@ -8,13 +8,14 @@ from track.application.cases import (
     StartTimeEntryUseCase,
     StopTimeEntryUseCase
 )
-from track.application.repositories import TimeEntryRepository
+from track.application.repositories import ProjectRepository, TimeEntryRepository
 from track.infrastructure.cli.renderer import Renderer
 
 
 @dataclass
 class TrackCLI:
     time_entry_repository: TimeEntryRepository
+    project_repository: ProjectRepository
     print: Callable
 
     def restart(self):
@@ -35,7 +36,7 @@ class TrackCLI:
         """Start a new time entry.
         """
         try:
-            case = StartTimeEntryUseCase(self.time_entry_repository)
+            case = StartTimeEntryUseCase(self.time_entry_repository, self.project_repository)
             case.exec(description, project)
             self.print(f"Starting with '{description}'")
         except Exception as e:
@@ -55,7 +56,7 @@ class TrackCLI:
     def current(self):
         """Show the current time entry.
         """
-        case = GetCurrentTimeEntryUseCase(self.time_entry_repository)
+        case = GetCurrentTimeEntryUseCase(self.time_entry_repository, self.project_repository)
         result = case.exec()
         if result:
             self.print(Renderer.render_time_entry(*result))
@@ -65,13 +66,13 @@ class TrackCLI:
     def today(self):
         """Show the total time tracked today.
         """
-        case = GetTodayReportUseCase(self.time_entry_repository)
+        case = GetTodayReportUseCase(self.time_entry_repository, self.project_repository)
         entries, projects_dict = case.exec()
         self.print(Renderer.render_report(entries, projects_dict))
 
     def week(self):
         """Show the total time tracked this week.
         """
-        case = GetCurrentWeekReportUseCase(self.time_entry_repository)
+        case = GetCurrentWeekReportUseCase(self.time_entry_repository, self.project_repository)
         entries, projects_dict = case.exec()
         self.print(Renderer.render_report(entries, projects_dict))

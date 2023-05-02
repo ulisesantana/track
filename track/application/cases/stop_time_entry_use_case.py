@@ -1,11 +1,13 @@
+from dataclasses import dataclass
+
 from track.application.repositories import TimeEntryRepository
 from track.core.helpers import TimeHelper
 
 
+@dataclass
 class StopTimeEntryUseCase:
-    def __init__(self, time_entry_repositoy: TimeEntryRepository, time_helper: TimeHelper = TimeHelper()):
-        self.time_entry_repository = time_entry_repositoy
-        self.time_helper = time_helper
+    time_entry_repository: TimeEntryRepository
+    time_helper: TimeHelper = TimeHelper()
 
     def exec(self):
         current_entry = self.time_entry_repository.get_current_entry()

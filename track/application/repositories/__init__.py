@@ -1,1 +1,2 @@
 from .time_entry_repository import TimeEntryRepository
+from .project_repository import ProjectRepository
