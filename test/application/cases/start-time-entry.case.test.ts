@@ -27,7 +27,8 @@ describe('StartTimeEntryUseCase', () => {
     it('should start a time entry with a valid project ID', async () => {
         const input = {description: 'Test Task', project: 123};
         timeEntryRepositoryMock.createEntry.resolves();
-        projectRepositoryMock.getProjectByName.resolves(null); // Assuming this is not called in this case
+        projectRepositoryMock.getProjectByName.resolves(null);
+        useCase = new StartTimeEntryUseCase(timeEntryRepositoryMock, projectRepositoryMock)
 
         await useCase.exec(input);
 

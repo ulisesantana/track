@@ -3,7 +3,7 @@ import sinon from 'sinon';
 
 import {ContinueWithLastTimeEntryUseCase} from "../../../src/application/cases";
 import {TimeEntryRepository} from "../../../src/application/repositories";
-import {Duration, TimeEntry, TimeHelper} from "../../../src/core";
+import {Duration, TimeEntry} from "../../../src/core";
 import {TimeEntryRepositoryDouble} from "../../doubles";
 
 
@@ -15,7 +15,7 @@ describe('ContinueWithLastTimeEntryUseCase', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     mockTimeEntryRepository = sandbox.createStubInstance<TimeEntryRepository>(TimeEntryRepositoryDouble);
-    useCase = new ContinueWithLastTimeEntryUseCase(mockTimeEntryRepository as unknown as TimeEntryRepository, new TimeHelper());
+    useCase = new ContinueWithLastTimeEntryUseCase(mockTimeEntryRepository as unknown as TimeEntryRepository);
   });
 
   afterEach(() => {
