@@ -1,6 +1,6 @@
-import { expect } from 'chai';
+import {expect} from 'chai';
 
-import {Duration, TimeEntryList} from '../../src/core';
+import {TimeEntryList} from '../../src/core';
 import {buildTimeEntry} from "../builders";
 
 describe('TimeEntryList', () => {

@@ -1,6 +1,5 @@
 import {ProjectNotFoundError, TimeEntry, TimeHelper, isValidId} from "../../core";
-import {TimeEntryRepository} from "../repositories";
-import {ProjectRepository} from "../repositories/project.repository";
+import {ProjectRepository, TimeEntryRepository} from "../repositories";
 import {UseCase} from "./use-case";
 
 type Input = {
