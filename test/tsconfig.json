@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "..",
+    "rootDirs": [
+      "src", "test"
+    ],
+    "esModuleInterop": true
+  },
+  "references": [
+    {"path": ".."}
+  ],
+  "include": ["src/**/*", "test/**/*"]
+}
