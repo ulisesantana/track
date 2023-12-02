@@ -22,10 +22,11 @@ export class TimeEntryList {
     const groupedEntries: Record<string, TimeEntry> = {};
 
     for (const entry of this.values) {
-      if (groupedEntries[entry.description]) {
-        groupedEntries[entry.description].duration.add(entry.duration);
+      const dictId = entry.pid + entry.description
+      if (groupedEntries[dictId]) {
+        groupedEntries[dictId].duration.add(entry.duration);
       } else {
-        groupedEntries[entry.description] = new TimeEntry(entry)
+        groupedEntries[dictId] = new TimeEntry(entry)
       }
     }
 
