@@ -12,7 +12,7 @@ export class ProjectRepositoryDouble implements ProjectRepository {
     return new Project(123, name);
   }
 
-  async getProjects(): Promise<Record<number, Project>> {
+  async getProjectsDictionary(): Promise<Record<number, Project>> {
     return {123: new Project(123, "Dummy project")};
   }
 

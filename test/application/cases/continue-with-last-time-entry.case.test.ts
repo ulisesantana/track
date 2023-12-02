@@ -1,12 +1,10 @@
-import { expect } from 'chai';
+import {expect} from 'chai';
 import sinon from 'sinon';
 
 import {ContinueWithLastTimeEntryUseCase} from "../../../src/application/cases";
 import {TimeEntryRepository} from "../../../src/application/repositories";
-import {TimeEntry, TimeHelper} from "../../../src/core";
-import {Duration} from "../../../src/core/entities/duration";
+import {Duration, TimeEntry, TimeHelper} from "../../../src/core";
 import {TimeEntryRepositoryDouble} from "../../doubles";
-
 
 
 describe('ContinueWithLastTimeEntryUseCase', () => {

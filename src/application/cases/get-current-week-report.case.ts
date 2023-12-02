@@ -15,7 +15,7 @@ export class GetCurrentWeekReportUseCase implements UseCase<Input, Output> {
     async exec() {
         const [entries, projects] = await Promise.all([
             this.timeEntryRepository.getCurrentWeekEntries(),
-            this.projectRepository.getProjects()
+            this.projectRepository.getProjectsDictionary()
         ])
         return new Report(entries, projects)
     }

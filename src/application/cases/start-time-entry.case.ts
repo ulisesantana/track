@@ -18,7 +18,7 @@ export class StartTimeEntryUseCase implements UseCase<Input, Output> {
   ) {}
 
   async exec({description, project}: Input) {
-    const pid = await this.getProjecId(project);
+    const pid = await this.getProjectId(project);
     await this.timeEntryRepository.createEntry(new TimeEntry({
       description,
       pid,
@@ -26,11 +26,11 @@ export class StartTimeEntryUseCase implements UseCase<Input, Output> {
     }), this.timeHelper.getCurrentUtcDate())
   }
 
-  private async getProjecId(project: number | string) {
+  private async getProjectId(project: number | string) {
     if (isValidId(project)) {
       return project
     }
-    
+
     const p = await this.projectRepository.getProjectByName(project)
     if (p === null) {
       throw new ProjectNotFoundError(project)
