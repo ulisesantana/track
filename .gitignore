@@ -9,5 +9,6 @@
 /tmp
 /yarn.lock
 node_modules
+coverage
 oclif.lock
 oclif.manifest.json
