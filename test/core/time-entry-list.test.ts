@@ -1,9 +1,11 @@
 import {expect} from 'chai';
 
 import {TimeEntryList} from '../../src/core';
-import {buildTimeEntry} from "../builders";
+import {buildProject, buildTimeEntry} from "../builders";
+
 
 describe('TimeEntryList', () => {
+  const project = buildProject({id: 1})
   describe('getTotalDuration', () => {
     it('should return 0 for an empty list', () => {
       const list = new TimeEntryList([]);
@@ -38,65 +40,74 @@ describe('TimeEntryList', () => {
   describe('groupEntriesByDescription', () => {
     it('should handle an empty list', () => {
       const list = new TimeEntryList([]);
-      expect(list.groupEntriesByDescription()).to.deep.equal({});
+      expect(list.groupEntriesByDescription()).to.deep.equal(new TimeEntryList([]));
     });
 
     it('should group entries correctly by description', () => {
       const entries = [
-        buildTimeEntry({ description: 'Task', duration: 60 }),
-        buildTimeEntry({ description: 'Task', duration: 40 }),
-        buildTimeEntry({ description: 'Meeting', duration: 30}),
+        buildTimeEntry({ description: 'Task', duration: 60, project }),
+        buildTimeEntry({ description: 'Task', duration: 40, project }),
+        buildTimeEntry({ description: 'Meeting', duration: 30, project}),
       ];
       const list = new TimeEntryList(entries);
       const grouped = list.groupEntriesByDescription();
 
-      expect(Object.keys(grouped)).to.have.lengthOf(2);
-      expect(grouped['1Task'].duration.value).to.equal(100);
-      expect(grouped['1Meeting'].duration.value).to.equal(30);
+      expect(grouped.values).to.have.lengthOf(2);
+      const entry1 = grouped.values.find(t => t.description === 'Task')
+      expect(entry1?.duration.value).to.equal(100);
+      const entry2 = grouped.values.find(t => t.description === 'Meeting')
+      expect(entry2?.duration.value).to.equal(30);
     });
 
     it('should handle unique descriptions', () => {
       const entries = [
-        buildTimeEntry({ description: 'Task 1', duration: 60 }),
-        buildTimeEntry({ description: 'Task 2', duration: 40 }),
+        buildTimeEntry({ description: 'Task 1', duration: 60, project }),
+        buildTimeEntry({ description: 'Task 2', duration: 40, project }),
       ];
       const list = new TimeEntryList(entries);
       const grouped = list.groupEntriesByDescription();
 
-      expect(grouped['1Task 1'].duration.value).to.equal(60);
-      expect(grouped['1Task 2'].duration.value).to.equal(40);
+      const entry1 = grouped.values.find(t => t.description === 'Task 1')
+      expect(entry1?.duration.value).to.equal(60);
+      const entry2 = grouped.values.find(t => t.description === 'Task 2')
+      expect(entry2?.duration.value).to.equal(40);
     });
 
     it('should handle entries with empty descriptions', () => {
       const entries = [
-        buildTimeEntry({ description: '', duration: 60 }),
-        buildTimeEntry({ description: '', duration: 40 }),
+        buildTimeEntry({ description: '', duration: 60, project }),
+        buildTimeEntry({ description: '', duration: 40, project }),
       ];
       const list = new TimeEntryList(entries);
       const grouped = list.groupEntriesByDescription();
-      expect(grouped['1'].duration.value).to.equal(100);
+      const entry = grouped.values.find(t => t.description === '')
+      expect(entry?.duration.value).to.equal(100);
     });
 
     it('should treat descriptions with different cases as distinct', () => {
       const entries = [
-        buildTimeEntry({ description: 'Task', duration: 30, pid: 1 }),
-        buildTimeEntry({ description: 'task', duration: 70, pid: 1 }),
+        buildTimeEntry({ description: 'Task', duration: 30, project: buildProject({id: 1}) }),
+        buildTimeEntry({ description: 'task', duration: 70, project: buildProject({id: 1}) }),
       ];
       const list = new TimeEntryList(entries);
       const grouped = list.groupEntriesByDescription();
-      expect(grouped['1Task'].duration.value).to.equal(30);
-      expect(grouped['1task'].duration.value).to.equal(70);
+      const entry1 = grouped.values.find(t => t.description === 'Task')
+      expect(entry1?.duration.value).to.equal(30);
+      const entry2 = grouped.values.find(t => t.description === 'task')
+      expect(entry2?.duration.value).to.equal(70);
     });
 
     it('should treat descriptions with different projects as distinct', () => {
       const entries = [
-        buildTimeEntry({ description: 'Task', duration: 30, pid: 1 }),
-        buildTimeEntry({ description: 'Task', duration: 70, pid: 2 }),
+        buildTimeEntry({ description: 'Task', duration: 30, project: buildProject({id:1}) }),
+        buildTimeEntry({ description: 'Task', duration: 70, project: buildProject({id:2}) }),
       ];
       const list = new TimeEntryList(entries);
       const grouped = list.groupEntriesByDescription();
-      expect(grouped['1Task'].duration.value).to.equal(30);
-      expect(grouped['2Task'].duration.value).to.equal(70);
+      const entry1 = grouped.values.find(t => t.description === 'Task' && t.project.id === 1)
+      expect(entry1?.duration.value).to.equal(30);
+      const entry2 = grouped.values.find(t => t.description === 'Task' && t.project.id === 2)
+      expect(entry2?.duration.value).to.equal(70);
     });
   });
 });

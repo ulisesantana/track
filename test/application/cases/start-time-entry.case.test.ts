@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import {StartTimeEntryUseCase} from '../../../src/application/cases'
 import {ProjectRepository, TimeEntryRepository} from "../../../src/application/repositories";
 import {ProjectNotFoundError, TimeHelper} from '../../../src/core';
+import {buildProject} from "../../builders";
 import {ProjectRepositoryDouble, TimeEntryRepositoryDouble} from "../../doubles";
 
 describe('StartTimeEntryUseCase', () => {
@@ -32,24 +33,36 @@ describe('StartTimeEntryUseCase', () => {
 
         await useCase.exec(input);
 
-        sinon.assert.calledWith(timeEntryRepositoryMock.createEntry, sinon.match.has('pid', 123));
+        sinon.assert.calledWith(timeEntryRepositoryMock.createEntry, sinon.match.has('description', input.description));
     });
 
     it('should start a time entry with a valid project name', async () => {
         const input = {description: 'Test Task', project: 'Test Project'};
-        const project = {id: 123, name: 'Test Project'};
+        const project = buildProject({id: 123, name: 'Test Project'});
         projectRepositoryMock.getProjectByName.resolves(project);
         timeEntryRepositoryMock.createEntry.resolves();
 
         await useCase.exec(input);
 
         sinon.assert.calledWith(projectRepositoryMock.getProjectByName, 'Test Project');
-        sinon.assert.calledWith(timeEntryRepositoryMock.createEntry, sinon.match.has('pid', 123));
+        sinon.assert.calledWith(timeEntryRepositoryMock.createEntry, sinon.match.has('description', input.description));
     });
 
-    it('should throw an error if the project is not found', async () => {
+    it('should throw an error if the project is not found by name', async () => {
         const input = {description: 'Test Task', project: 'Unknown Project'};
         projectRepositoryMock.getProjectByName.resolves(null);
+
+        try {
+            await useCase.exec(input);
+            expect.fail('should have thrown an error');
+        } catch (error) {
+            expect(error).to.be.instanceOf(ProjectNotFoundError);
+        }
+    });
+
+    it('should throw an error if the project is not found by id', async () => {
+        const input = {description: 'Test Task', project: 1};
+        projectRepositoryMock.getProjectById.resolves(null);
 
         try {
             await useCase.exec(input);

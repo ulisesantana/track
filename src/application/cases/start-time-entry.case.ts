@@ -1,4 +1,4 @@
-import {ProjectNotFoundError, TimeEntry, TimeHelper, isValidId} from "../../core";
+import {Project, ProjectNotFoundError, TimeEntry, TimeHelper, isValidId} from "../../core";
 import {ProjectRepository, TimeEntryRepository} from "../repositories";
 import {UseCase} from "./use-case";
 
@@ -17,25 +17,30 @@ export class StartTimeEntryUseCase implements UseCase<Input, Output> {
   ) {}
 
   async exec({description, project}: Input) {
-    const pid = await this.getProjectId(project);
+    const pid = await this.getProject(project);
     await this.timeEntryRepository.createEntry(new TimeEntry({
       description,
-      pid,
+      project: pid,
       wid: this.timeEntryRepository.workspaceId,
     }), this.timeHelper.getCurrentUtcDate())
   }
 
-  private async getProjectId(project: number | string) {
-    if (isValidId(project)) {
+  private async getProject(projectKey: number | string): Promise<Project> {
+    if (isValidId(projectKey)) {
+      const project = await this.projectRepository.getProjectById(projectKey)
+      if (project === null) {
+        throw new ProjectNotFoundError(projectKey)
+      }
+
       return project
     }
 
-    const p = await this.projectRepository.getProjectByName(project)
-    if (p === null) {
-      throw new ProjectNotFoundError(project)
+    const project = await this.projectRepository.getProjectByName(projectKey)
+    if (project === null) {
+      throw new ProjectNotFoundError(projectKey)
     }
 
-    return p.id
+    return project
 
   }
 }

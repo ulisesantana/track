@@ -1,5 +1,5 @@
 import {Report} from "../../core";
-import {ProjectRepository, TimeEntryRepository} from "../repositories";
+import {TimeEntryRepository} from "../repositories";
 import {UseCase} from "./use-case";
 
 type Input = undefined
@@ -8,15 +8,11 @@ type Output = Promise<Report>
 export class GetCurrentWeekReportUseCase implements UseCase<Input, Output> {
 
     constructor(
-        private readonly timeEntryRepository: TimeEntryRepository,
-        private readonly projectRepository: ProjectRepository
+        private readonly timeEntryRepository: TimeEntryRepository
     ) {}
 
     async exec() {
-        const [entries, projects] = await Promise.all([
-            this.timeEntryRepository.getCurrentWeekEntries(),
-            this.projectRepository.getProjectsDictionary()
-        ])
-        return new Report(entries, projects)
+        const entries = await this.timeEntryRepository.getCurrentWeekEntries()
+        return new Report(entries)
     }
 }

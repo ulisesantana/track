@@ -1,6 +1,7 @@
 {
   "extends": ["oclif", "oclif-typescript", "prettier"],
   "rules": {
-    "no-useless-constructor": "off"
+    "no-useless-constructor": "off",
+    "unicorn/no-object-as-default-parameter": "off"
   }
 }

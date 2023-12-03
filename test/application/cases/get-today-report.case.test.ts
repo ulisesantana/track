@@ -2,21 +2,19 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 
 import {GetTodayReportUseCase} from '../../../src/application/cases'
-import {ProjectRepository, TimeEntryRepository} from "../../../src/application/repositories";
+import {TimeEntryRepository} from "../../../src/application/repositories";
 import {Project, TimeEntryList} from '../../../src/core';
 import {buildTimeEntry} from "../../builders";
-import {ProjectRepositoryDouble, TimeEntryRepositoryDouble} from "../../doubles";
+import {TimeEntryRepositoryDouble} from "../../doubles";
 
 
 describe('GetTodayReportUseCase', () => {
     let useCase: GetTodayReportUseCase;
     let timeEntryRepositoryMock: sinon.SinonStubbedInstance<TimeEntryRepository>;
-    let projectRepositoryMock: sinon.SinonStubbedInstance<ProjectRepository>;
 
     beforeEach(() => {
         timeEntryRepositoryMock = sinon.createStubInstance(TimeEntryRepositoryDouble);
-        projectRepositoryMock = sinon.createStubInstance(ProjectRepositoryDouble);
-        useCase = new GetTodayReportUseCase(timeEntryRepositoryMock, projectRepositoryMock);
+        useCase = new GetTodayReportUseCase(timeEntryRepositoryMock);
     });
 
     afterEach(() => {
@@ -30,12 +28,11 @@ describe('GetTodayReportUseCase', () => {
             new Project(2, 'Test project 2')
         ]
         const entries = new TimeEntryList([
-            buildTimeEntry({duration: 1800, pid: projects.at(0)?.id}),
-            buildTimeEntry({duration: 1800, pid: projects.at(0)?.id}),
-            buildTimeEntry({duration: 1800, pid: projects.at(1)?.id})
+            buildTimeEntry({duration: 1800, project: projects.at(0)}),
+            buildTimeEntry({duration: 1800, project: projects.at(0)}),
+            buildTimeEntry({duration: 1800, project: projects.at(1)})
         ])
         timeEntryRepositoryMock.getTodayEntries.resolves(entries);
-        projectRepositoryMock.getProjectsDictionary.resolves(Object.fromEntries(projects.map((p) => [p.id, p])));
 
         const report = await useCase.exec();
 

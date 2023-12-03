@@ -2,9 +2,9 @@ import { Duration } from "./duration";
 import {TimeEntry} from "./time-entry";
 
 export class TimeEntryList {
-  values: TimeEntry[];
+  values: Array<TimeEntry>;
 
-  constructor(values: TimeEntry[]) {
+  constructor(values: Array<TimeEntry>) {
     this.values = values;
   }
 
@@ -18,11 +18,11 @@ export class TimeEntryList {
     return totalDuration
   }
 
-  groupEntriesByDescription(): Record<string, TimeEntry> {
+  groupEntriesByDescription(): TimeEntryList {
     const groupedEntries: Record<string, TimeEntry> = {};
 
     for (const entry of this.values) {
-      const dictId = entry.pid + entry.description
+      const dictId = entry.project.id + entry.description
       if (groupedEntries[dictId]) {
         groupedEntries[dictId].duration.add(entry.duration);
       } else {
@@ -30,6 +30,6 @@ export class TimeEntryList {
       }
     }
 
-    return groupedEntries;
+    return new TimeEntryList(Object.values(groupedEntries));
   }
 }

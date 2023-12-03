@@ -2,6 +2,7 @@
 
 import {TimeEntryRepository} from "../../src/application/repositories";
 import {Nullable, TimeEntry, TimeEntryList} from "../../src/core";
+import {buildTimeEntry} from "../builders";
 
 export class TimeEntryRepositoryDouble implements TimeEntryRepository {
   private currentEntry: Nullable<TimeEntry> = null
@@ -39,7 +40,7 @@ export class TimeEntryRepositoryDouble implements TimeEntryRepository {
   }
 
   async updateEntry(entry: Partial<TimeEntry>) {
-    return new TimeEntry({description: "Dumb", id: 0, pid: 0, wid: 0, ...entry})
+    return buildTimeEntry()
   }
 
 }

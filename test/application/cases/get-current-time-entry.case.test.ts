@@ -2,18 +2,16 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 
 import {GetCurrentTimeEntryUseCase} from "../../../src/application/cases";
-import {Project, ProjectNotFoundError, TimeEntry} from "../../../src/core";
-import {ProjectRepositoryDouble, TimeEntryRepositoryDouble} from "../../doubles";
+import {buildTimeEntry} from "../../builders";
+import {TimeEntryRepositoryDouble} from "../../doubles";
 
 describe('GetCurrentTimeEntryUseCase', () => {
     let useCase: GetCurrentTimeEntryUseCase;
     let timeEntryRepositoryMock: sinon.SinonStubbedInstance<TimeEntryRepositoryDouble>;
-    let projectRepositoryMock: sinon.SinonStubbedInstance<ProjectRepositoryDouble>;
 
     beforeEach(() => {
         timeEntryRepositoryMock = sinon.createStubInstance(TimeEntryRepositoryDouble);
-        projectRepositoryMock = sinon.createStubInstance(ProjectRepositoryDouble);
-        useCase = new GetCurrentTimeEntryUseCase(timeEntryRepositoryMock, projectRepositoryMock);
+        useCase = new GetCurrentTimeEntryUseCase(timeEntryRepositoryMock);
     });
 
     afterEach(() => {
@@ -21,14 +19,12 @@ describe('GetCurrentTimeEntryUseCase', () => {
     });
 
     it('should return the current time entry and its project when both are found', async () => {
-        const currentEntry = new TimeEntry({ description: 'Work', pid: 1, wid: 1 });
-        const project = new Project(1, 'Test Project');
+        const currentEntry = buildTimeEntry();
         timeEntryRepositoryMock.getCurrentEntry.resolves(currentEntry);
-        projectRepositoryMock.getProjectById.resolves(project);
 
         const result = await useCase.exec();
 
-        expect(result).to.deep.equal([currentEntry, project]);
+        expect(result).to.deep.equal(currentEntry);
     });
 
     it('should return null if there is no current time entry', async () => {
@@ -38,19 +34,5 @@ describe('GetCurrentTimeEntryUseCase', () => {
 
         expect(result).to.be.null;
     });
-
-    it('should throw ProjectNotFoundError if the project for the current time entry is not found', async () => {
-        const currentEntry = new TimeEntry({ description: 'Work', pid: 1, wid: 1 });
-        timeEntryRepositoryMock.getCurrentEntry.resolves(currentEntry);
-        projectRepositoryMock.getProjectById.resolves(null);
-
-        try {
-            await useCase.exec();
-            expect.fail('should have thrown ProjectNotFoundError');
-        } catch (error) {
-            expect(error).to.be.instanceOf(ProjectNotFoundError);
-        }
-    });
-
 
 });

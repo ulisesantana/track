@@ -1,5 +1,5 @@
 import {TimeEntry, TimeHelper} from "../../core";
-import {TimeEntryRepository} from "../repositories/time-entry.repository";
+import {TimeEntryRepository} from "../repositories";
 
 
 export class ContinueWithLastTimeEntryUseCase {
@@ -15,7 +15,7 @@ export class ContinueWithLastTimeEntryUseCase {
       return this.timeEntryRepository.createEntry(new TimeEntry({
         description: lastEntry.description,
         id: lastEntry.id,
-        pid: lastEntry.pid,
+        project: lastEntry.project,
         wid: lastEntry.wid,
       }), this.timeHelper.getCurrentUtcDate());
     }

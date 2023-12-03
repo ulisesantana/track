@@ -2,21 +2,19 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 
 import {GetCurrentWeekReportUseCase} from '../../../src/application/cases'
-import {ProjectRepository, TimeEntryRepository} from "../../../src/application/repositories";
-import {Project, TimeEntryList} from "../../../src/core";
-import {buildTimeEntry} from "../../builders";
-import {ProjectRepositoryDouble, TimeEntryRepositoryDouble} from "../../doubles";
+import {TimeEntryRepository} from "../../../src/application/repositories";
+import {TimeEntryList} from "../../../src/core";
+import {buildProject, buildTimeEntry} from "../../builders";
+import {TimeEntryRepositoryDouble} from "../../doubles";
 
 
 describe('GetCurrentWeekReportUseCase', () => {
     let useCase: GetCurrentWeekReportUseCase;
     let timeEntryRepositoryMock: sinon.SinonStubbedInstance<TimeEntryRepository>;
-    let projectRepositoryMock: sinon.SinonStubbedInstance<ProjectRepository>;
 
     beforeEach(() => {
         timeEntryRepositoryMock = sinon.createStubInstance(TimeEntryRepositoryDouble);
-        projectRepositoryMock = sinon.createStubInstance(ProjectRepositoryDouble);
-        useCase = new GetCurrentWeekReportUseCase(timeEntryRepositoryMock, projectRepositoryMock);
+        useCase = new GetCurrentWeekReportUseCase(timeEntryRepositoryMock);
     });
 
     afterEach(() => {
@@ -26,16 +24,15 @@ describe('GetCurrentWeekReportUseCase', () => {
 
     it('should return a report', async () => {
         const projects = [
-            new Project(1, 'Test project 1'),
-            new Project(2, 'Test project 2')
+            buildProject({id: 1, name: 'Test project 1'}),
+            buildProject({id: 2, name: 'Test project 2'})
         ]
         const entries = new TimeEntryList([
-            buildTimeEntry({duration: 1800, pid: projects.at(0)?.id}),
-            buildTimeEntry({duration: 1800, pid: projects.at(0)?.id}),
-            buildTimeEntry({duration: 1800, pid: projects.at(1)?.id})
+            buildTimeEntry({duration: 1800, project: projects.at(0)}),
+            buildTimeEntry({duration: 1800, project: projects.at(0)}),
+            buildTimeEntry({duration: 1800, project: projects.at(1)})
         ])
         timeEntryRepositoryMock.getCurrentWeekEntries.resolves(entries);
-        projectRepositoryMock.getProjectsDictionary.resolves(Object.fromEntries(projects.map((p) => [p.id, p])));
 
         const report = await useCase.exec();
 
