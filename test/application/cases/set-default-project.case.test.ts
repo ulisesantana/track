@@ -20,7 +20,7 @@ describe('SetDefaultProjectUseCase', () => {
 
 
     it('should persist default project id for new time entries', async () => {
-        const input = Math.random() * 10**16;
+        const input = Math.floor(Math.random() * 10**16);
 
         await useCase.exec(input);
 
