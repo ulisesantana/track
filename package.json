@@ -60,7 +60,7 @@
   "repository": "ulisesantana/track",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
-    "create:use-case": "./scripts/templates/generate-use-case.mjs",
+    "create:use-case": "./scripts/templates/generate-use-case.mjs && git add {src,test}/application/cases",
     "lint": "eslint . --ext .ts",
     "lint:fix": "npm run lint -- --fix",
     "postpack": "shx rm -f oclif.manifest.json",
