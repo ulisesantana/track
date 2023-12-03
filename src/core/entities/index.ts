@@ -1,3 +1,4 @@
+export * from './configuration'
 export * from './duration'
 export * from './project'
 export * from './report'

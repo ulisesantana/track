@@ -1,4 +1,11 @@
 export class TimeHelper {
+  static secondsToHmsString(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${TimeHelper.addZeroPrefix(hours)}h ${TimeHelper.addZeroPrefix(minutes)}m ${TimeHelper.addZeroPrefix(remainingSeconds)}s`;
+  }
+
   private static addZeroPrefix(number: number): string {
     return number > 9 ? number.toString() : `0${number}`;
   }
@@ -18,18 +25,5 @@ export class TimeHelper {
     endOfWeek.setDate(startOfWeek.getDate() + 6);
 
     return [startOfWeek, endOfWeek];
-  }
-
-
-
-  secondsToHmsString(seconds: number): string {
-    return TimeHelper.secondsToHmsString(seconds)
-  }
-
-  static secondsToHmsString(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return `${TimeHelper.addZeroPrefix(hours)}h ${TimeHelper.addZeroPrefix(minutes)}m ${TimeHelper.addZeroPrefix(remainingSeconds)}s`;
   }
 }

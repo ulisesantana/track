@@ -105,7 +105,5 @@ describe('${pascalizedUseCase}', () => {
         }
     });
 
-});
-
-}`
+});`
 }
