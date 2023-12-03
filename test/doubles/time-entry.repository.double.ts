@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {TimeEntryRepository} from "../../src/application/repositories";
 import {Nullable, TimeEntry, TimeEntryList} from "../../src/core";
 
 export class TimeEntryRepositoryDouble implements TimeEntryRepository {
   private currentEntry: Nullable<TimeEntry> = null
+  private stopEntryDummy: Nullable<TimeEntry> = null
   constructor(readonly workspaceId: number = 123) {
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createEntry(entry: TimeEntry, start: string) {
     return entry
   }
@@ -30,6 +32,10 @@ export class TimeEntryRepositoryDouble implements TimeEntryRepository {
   setCurrentEntry(entry: Nullable<TimeEntry>): TimeEntryRepositoryDouble {
     this.currentEntry = entry
     return this
+  }
+
+  async stopEntry(id: number, stopTime: string): Promise<Nullable<TimeEntry>> {
+    return this.stopEntryDummy
   }
 
   async updateEntry(entry: Partial<TimeEntry>) {

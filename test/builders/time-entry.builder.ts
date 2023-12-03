@@ -3,7 +3,7 @@ import {Duration, TimeEntry, TimeEntryParams} from "../../src/core";
 type TimeEntryBuilderParams = Partial<Omit<TimeEntryParams, 'duration'> & {
     duration: number
 }>
-export function buildTimeEntry({description, duration, id, pid, wid}: TimeEntryBuilderParams) {
+export function buildTimeEntry({description, duration, id, pid, wid}: TimeEntryBuilderParams = {}) {
     return new TimeEntry({
         description: description ?? 'Test entry',
         duration: new Duration(duration ?? 1800),

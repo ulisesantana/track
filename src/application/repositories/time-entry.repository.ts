@@ -11,6 +11,8 @@ export interface TimeEntryRepository {
 
   getTodayEntries(): Promise<TimeEntryList>;
 
+  stopEntry(id: number, stopTime: string): Promise<Nullable<TimeEntry>>;
+
   updateEntry(entry: Partial<TimeEntry>): Promise<TimeEntry>;
 
   workspaceId: number;
