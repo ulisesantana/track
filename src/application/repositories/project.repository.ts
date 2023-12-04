@@ -5,6 +5,5 @@ export interface ProjectRepository {
 
   getProjectByName(name: string): Promise<Nullable<Project>>;
 
-  getProjectsDictionary(): Promise<Record<number, Project>>;
-  workspaceId: number
+  getProjects(): Promise<Array<Project>>;
 }

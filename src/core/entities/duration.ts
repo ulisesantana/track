@@ -8,7 +8,7 @@ export class Duration {
         return duration instanceof Duration;
     }
 
-    get value() {
+    get value(): number {
         if (this.duration < 0) {
             return Math.floor(Date.now() / 1000) + this.duration;
         }

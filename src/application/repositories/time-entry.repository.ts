@@ -1,7 +1,7 @@
 import {Nullable, TimeEntry, TimeEntryList} from '../../core';
 
 export interface TimeEntryRepository {
-  createEntry(entry: TimeEntry, start: string): Promise<TimeEntry>;
+  createEntry(entry: TimeEntry, start: Date): Promise<TimeEntry>;
 
   getCurrentEntry(): Promise<Nullable<TimeEntry>>;
 
@@ -11,9 +11,5 @@ export interface TimeEntryRepository {
 
   getTodayEntries(): Promise<TimeEntryList>;
 
-  stopEntry(id: number, stopTime: string): Promise<Nullable<TimeEntry>>;
-
-  updateEntry(entry: Partial<TimeEntry>): Promise<TimeEntry>;
-
-  workspaceId: number;
+  stopEntry(id: number, stopTime: Date): Promise<Nullable<TimeEntry>>;
 }

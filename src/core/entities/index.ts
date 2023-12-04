@@ -1,5 +1,6 @@
 export * from './configuration'
 export * from './duration'
+export * from './null-project'
 export * from './project'
 export * from './report'
 export * from './time-entry'

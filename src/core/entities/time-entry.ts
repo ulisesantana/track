@@ -6,7 +6,6 @@ export interface TimeEntryParams {
   duration?: Duration,
   id?: number,
   project: Project,
-  wid: number
 }
 
 export class TimeEntry {
@@ -14,12 +13,10 @@ export class TimeEntry {
   duration: Duration;
   id: number;
   project: Project;
-  wid: number;
 
-  constructor({ description, duration, id, project, wid}: TimeEntryParams) {
+  constructor({ description, duration, id, project}: TimeEntryParams) {
     this.id = id || Math.floor(Math.random() * 10**16);
     this.project = project;
-    this.wid = wid;
     this.description = description;
     this.duration = duration || new Duration();
   }

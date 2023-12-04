@@ -20,8 +20,7 @@ export class StartTimeEntryUseCase implements UseCase<Input, Output> {
     const pid = await this.getProject(project);
     await this.timeEntryRepository.createEntry(new TimeEntry({
       description,
-      project: pid,
-      wid: this.timeEntryRepository.workspaceId,
+      project: pid
     }), this.timeHelper.getCurrentUtcDate())
   }
 

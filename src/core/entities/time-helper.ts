@@ -10,9 +10,8 @@ export class TimeHelper {
     return number > 9 ? number.toString() : `0${number}`;
   }
 
-  getCurrentUtcDate(): string {
-    const now = new Date();
-    return now.toISOString();
+  getCurrentUtcDate(): Date {
+    return new Date();
   }
 
   getWeekDates(date: Date): [Date, Date] {

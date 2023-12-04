@@ -35,7 +35,7 @@ export class TimeEntryRepositoryDouble implements TimeEntryRepository {
     return this
   }
 
-  async stopEntry(id: number, stopTime: string): Promise<Nullable<TimeEntry>> {
+  async stopEntry(id: number, stopTime: Date): Promise<Nullable<TimeEntry>> {
     return this.stopEntryDummy
   }
 

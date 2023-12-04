@@ -16,7 +16,6 @@ export class ContinueWithLastTimeEntryUseCase {
         description: lastEntry.description,
         id: lastEntry.id,
         project: lastEntry.project,
-        wid: lastEntry.wid,
       }), this.timeHelper.getCurrentUtcDate());
     }
 

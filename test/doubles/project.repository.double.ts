@@ -1,5 +1,6 @@
 import {ProjectRepository} from "../../src/application/repositories";
 import {Nullable, Project} from "../../src/core";
+import {buildProject} from "../builders";
 
 export class ProjectRepositoryDouble implements ProjectRepository {
   workspaceId = 456
@@ -12,8 +13,8 @@ export class ProjectRepositoryDouble implements ProjectRepository {
     return new Project(123, name);
   }
 
-  async getProjectsDictionary(): Promise<Record<number, Project>> {
-    return {123: new Project(123, "Dummy project")};
+  async getProjects() {
+    return [buildProject()];
   }
 
 }
