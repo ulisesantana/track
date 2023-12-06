@@ -7,7 +7,7 @@ export class ConfigurationRepositoryDouble implements ConfigurationRepository {
         return defaultConfiguration;
     }
 
-    setApiKey(key: string): void {
+    setApiToken(key: string): void {
     }
 
     setDefaultProjectId(projectId: number): void {

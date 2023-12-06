@@ -3,7 +3,7 @@ import {Configuration} from "../../core";
 export interface ConfigurationRepository {
     getAll(): Configuration
 
-    setApiKey(key: string): void
+    setApiToken(key: string): void
 
     setDefaultProjectId(projectId: number): void
 

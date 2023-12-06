@@ -14,7 +14,7 @@ describe('ConfigurationRepositoryImplementation', () => {
 
     it('should correctly retrieve all configuration values', () => {
         const config = {
-            apiKey: 'testApiKey',
+            apiToken: 'testApiToken',
             defaultTimeEntry: 'testEntry',
             projectId: 123,
             workspaceId: 456
@@ -27,9 +27,9 @@ describe('ConfigurationRepositoryImplementation', () => {
     });
 
     it('should correctly set the API key', () => {
-        const newApiKey = '09a786fg0qa78yg';
-        repository.setApiKey(newApiKey);
-        expect(source.db.apiKey).to.be.equal(newApiKey);
+        const newApiToken = '09a786fg0qa78yg';
+        repository.setApiToken(newApiToken);
+        expect(source.db.apiToken).to.be.equal(newApiToken);
     });
 
     it('should correctly set the default project ID', () => {

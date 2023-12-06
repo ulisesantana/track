@@ -7,15 +7,15 @@ export class ConfigurationRepositoryImplementation implements ConfigurationRepos
 
     getAll(): Configuration {
         return {
-            apiKey: this.source.get('apiKey') as string,
+            apiToken: this.source.get('apiToken') as string,
             defaultTimeEntry: this.source.get('defaultTimeEntry') as string,
             projectId: this.source.get('projectId') as number,
             workspaceId: this.source.get('workspaceId') as number
         }
     }
 
-    setApiKey(key: string): void {
-        this.source.set('apiKey', key)
+    setApiToken(key: string): void {
+        this.source.set('apiToken', key)
     }
 
     setDefaultProjectId(projectId: number): void {

@@ -1,8 +1,8 @@
 import {expect, test} from '@oclif/test'
 import {EOL} from "node:os";
 
-import ConfigCommand from '../../src/commands/config'
-import {defaultConfiguration} from "../../src/core";
+import ConfigCommand from '../../../src/commands/config'
+import {defaultConfiguration} from "../../../src/core";
 
 const error = new Error('Something weird happened');
 describe('config command runs', () => {

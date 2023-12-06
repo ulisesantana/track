@@ -1,15 +1,15 @@
 import {Command} from '@oclif/core'
 import createConfigurationStore from 'configuration-store';
 
-import {GetConfigurationUseCase} from "../application/cases";
-import {ConfigurationRepository} from "../application/repositories";
-import {Configuration} from "../core";
-import {ConfigurationRepositoryImplementation} from "../infrastructure/repositories";
+import {GetConfigurationUseCase} from "../../application/cases";
+import {ConfigurationRepository} from "../../application/repositories";
+import {Configuration, configFilename} from "../../core";
+import {ConfigurationRepositoryImplementation} from "../../infrastructure/repositories";
 
 export default class Config extends Command {
-  static configurationRepository: ConfigurationRepository = new ConfigurationRepositoryImplementation(createConfigurationStore<Configuration>({filename: 'track'}))
+  static configurationRepository: ConfigurationRepository = new ConfigurationRepositoryImplementation(createConfigurationStore<Configuration>({filename: configFilename}))
 
-  static description = 'describe the command here'
+  static description = 'Get your config for track CLI.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %>',

@@ -1,13 +1,15 @@
 export interface Configuration {
-    apiKey: string
+    apiToken: string
     defaultTimeEntry: string
     projectId: number
     workspaceId: number
 }
 
 export const defaultConfiguration: Configuration = {
-    apiKey: '',
+    apiToken: '',
     defaultTimeEntry: '',
     projectId: -1,
     workspaceId: -1
 }
+
+export const configFilename = '.track'

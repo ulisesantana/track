@@ -1,17 +1,17 @@
 import sinon from 'sinon';
 
-import {SetApiKeyUseCase} from '../../../src/application/cases'
+import {SetApiTokenUseCase} from '../../../src/application/cases'
 import {ConfigurationRepository} from "../../../src/application/repositories";
 import {ConfigurationRepositoryDouble} from "../../doubles";
 
 
-describe('SetApiKeyUseCase', () => {
-    let useCase: SetApiKeyUseCase;
+describe('SetApiTokenUseCase', () => {
+    let useCase: SetApiTokenUseCase;
     let configurationRepositoryMock: sinon.SinonStubbedInstance<ConfigurationRepository>;
 
     beforeEach(() => {
         configurationRepositoryMock = sinon.createStubInstance(ConfigurationRepositoryDouble);
-        useCase = new SetApiKeyUseCase(configurationRepositoryMock);
+        useCase = new SetApiTokenUseCase(configurationRepositoryMock);
     });
 
     afterEach(() => {
@@ -24,7 +24,7 @@ describe('SetApiKeyUseCase', () => {
 
         await useCase.exec(input);
 
-        sinon.assert.calledWith(configurationRepositoryMock.setApiKey, input);
+        sinon.assert.calledWith(configurationRepositoryMock.setApiToken, input);
     });
 
 });
