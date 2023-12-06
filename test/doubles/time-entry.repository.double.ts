@@ -10,7 +10,7 @@ export class TimeEntryRepositoryDouble implements TimeEntryRepository {
   constructor(readonly workspaceId: number = 123) {
   }
 
-  async createEntry(entry: TimeEntry, start: string) {
+  async createEntry(entry: TimeEntry, start: Date) {
     return entry
   }
 

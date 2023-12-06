@@ -1,24 +1,23 @@
 /* eslint-disable camelcase */
 import {TimeEntryRepository} from "../../application/repositories";
 import {Duration, NullProject, Nullable, Project, TimeEntry, TimeEntryList, TimeHelper} from '../../core';
-import {TogglDataSource} from "../data-sources";
+import {TogglApi} from "../data-sources";
 import {TogglProject, TogglTimeEntry} from "../types";
 
 export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
-    constructor(private readonly api: TogglDataSource, private readonly time = new TimeHelper()) {
+    constructor(private readonly api: TogglApi, private readonly time = new TimeHelper()) {
     }
 
-    private static mapToTimeEntry(entry: TogglTimeEntry, project: Nullable<Project>): TimeEntry {
+    static mapToTimeEntry(entry: TogglTimeEntry, project: Nullable<Project>): TimeEntry {
         return new TimeEntry({
             description: entry.description,
             duration: new Duration(entry.duration),
             id: entry.id,
             project: project ? new Project(project.id, project.name) : new NullProject(),
-            wid: entry.workspace_id!
         })
     }
 
-    private static mapToTimeEntryList(entries: Array<TogglTimeEntry>, projects: Array<TogglProject>) {
+    static mapToTimeEntryList(entries: Array<TogglTimeEntry>, projects: Array<TogglProject>) {
         const projectsId = new Set(entries.map(({project_id}) => project_id))
         const projectDictionary = projects.reduce(
             (dict, project) => projectsId.has(project.id)
@@ -58,6 +57,10 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
 
     async getCurrentEntry(): Promise<Nullable<TimeEntry>> {
         const [entry] = await this.api.getTimeEntries()
+        if (!entry) {
+            return null
+        }
+
         const project = await this.api.getProjectById(entry.project_id)
         return TimeEntryRepositoryImplementation.mapToTimeEntry(entry, project)
     }
@@ -68,6 +71,9 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
             this.api.getTimeEntries(start, end),
             this.api.getProjects()
         ])
+        if (entries.length === 0) {
+            return new TimeEntryList([])
+        }
 
         return TimeEntryRepositoryImplementation.mapToTimeEntryList(entries, projects)
     }

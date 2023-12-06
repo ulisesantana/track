@@ -26,7 +26,7 @@ describe('StopCurrentTimeEntryUseCase', () => {
 
     it('should stop current time entry', async () => {
         const timeEntry = buildTimeEntry()
-        const stopTime = new Date().toISOString();
+        const stopTime = new Date();
         timeEntryRepositoryMock.getCurrentEntry.resolves(timeEntry);
         timeEntryRepositoryMock.stopEntry.resolves(timeEntry);
         timeHelperMock.getCurrentUtcDate.returns(stopTime)

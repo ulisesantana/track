@@ -1,20 +1,20 @@
 import {Nullable} from "../../core";
 import {FetchFunction, TogglProject, TogglTimeEntry} from "../types";
 
-export interface TogglDataSourceParams {
+export interface TogglApiParams {
     baseUrl?: string
     fetch: FetchFunction
     token: string
     workspaceId: number
 }
 
-export class TogglDataSource {
+export class TogglApi {
     private readonly baseUrl: string
     private readonly basicHeaders: Headers
     private readonly fetch: FetchFunction
     private readonly workspaceId: number
 
-    constructor({baseUrl, fetch, token, workspaceId}: TogglDataSourceParams) {
+    constructor({baseUrl, fetch, token, workspaceId}: TogglApiParams) {
         this.fetch = fetch
         this.baseUrl = baseUrl || "https://api.track.toggl.com/api/v9"
         this.workspaceId = workspaceId
@@ -70,18 +70,18 @@ export class TogglDataSource {
     async getTimeEntries(from?: Date, to?: Date): Promise<Array<TogglTimeEntry>> {
         const queryString = new URLSearchParams()
         if (from && !to) {
-            queryString.set('start_date', TogglDataSource.formatDate(from))
-            queryString.set('end_date', TogglDataSource.formatDate(new Date()))
+            queryString.set('start_date', TogglApi.formatDate(from))
+            queryString.set('end_date', TogglApi.formatDate(new Date()))
         }
 
         if (!from && to) {
-            queryString.set('start_date', TogglDataSource.formatDate(new Date(0)))
-            queryString.set('end_date', TogglDataSource.formatDate(to))
+            queryString.set('start_date', TogglApi.formatDate(new Date(0)))
+            queryString.set('end_date', TogglApi.formatDate(to))
         }
 
         if (from && to) {
-            queryString.set('start_date', TogglDataSource.formatDate(from))
-            queryString.set('end_date', TogglDataSource.formatDate(to))
+            queryString.set('start_date', TogglApi.formatDate(from))
+            queryString.set('end_date', TogglApi.formatDate(to))
         }
 
         const url = [...queryString.entries()].length > 0

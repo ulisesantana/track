@@ -3,7 +3,6 @@ import {Nullable, Project} from "../../src/core";
 import {buildProject} from "../builders";
 
 export class ProjectRepositoryDouble implements ProjectRepository {
-  workspaceId = 456
 
   async getProjectById(id: number): Promise<Nullable<Project>> {
     return new Project(id, "Dummy project");

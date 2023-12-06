@@ -1,12 +1,12 @@
 import {ProjectRepository} from "../../application/repositories";
 import {NullProject, Nullable, Project} from "../../core";
-import {TogglDataSource} from "../data-sources";
+import {TogglApi} from "../data-sources";
 import {TogglProject} from "../types";
 
 export class ProjectRepositoryImplementation implements ProjectRepository {
-    constructor(private readonly api: TogglDataSource) {}
+    constructor(private readonly api: TogglApi) {}
 
-    private static mapToProject(project: Nullable<TogglProject>): Project {
+    static mapToProject(project: Nullable<TogglProject>): Project {
         return project
             ? new Project(project.id, project.name)
             : new NullProject()
@@ -19,10 +19,8 @@ export class ProjectRepositoryImplementation implements ProjectRepository {
 
     async getProjectByName(name: string): Promise<Project> {
         const projects = await this.api.getProjects()
-        const project = projects.find(p => p.name === name)
-        return project
-            ? ProjectRepositoryImplementation.mapToProject(project)
-            : new NullProject()
+        const project = projects.find(p => p.name === name) || null
+        return ProjectRepositoryImplementation.mapToProject(project)
     }
 
     async getProjects(): Promise<Array<Project>> {

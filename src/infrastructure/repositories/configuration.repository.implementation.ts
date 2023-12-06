@@ -1,9 +1,9 @@
 import {ConfigurationRepository} from "../../application/repositories";
 import {Configuration} from "../../core";
-import {ConfigDataSource} from "../data-sources";
+import {FileDb} from "../data-sources";
 
 export class ConfigurationRepositoryImplementation implements ConfigurationRepository {
-    constructor(private readonly source: ConfigDataSource) {}
+    constructor(private readonly source: FileDb<Configuration>) {}
 
     getAll(): Configuration {
         return {
