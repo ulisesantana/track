@@ -12,4 +12,4 @@ export const defaultConfiguration: Configuration = {
     workspaceId: -1
 }
 
-export const configFilename = '.track'
+export const configFilename = 'config.json'

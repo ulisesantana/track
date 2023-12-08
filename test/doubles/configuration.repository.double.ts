@@ -1,22 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {ConfigurationRepository} from "../../src/application/repositories";
-import {Configuration, defaultConfiguration} from "../../src/core";
+import {Configuration} from "../../src/core";
+import {configuration} from "../fixtures";
 
 export class ConfigurationRepositoryDouble implements ConfigurationRepository {
-    getAll(): Configuration {
-        return defaultConfiguration;
+    async getAll(): Promise<Configuration> {
+        return configuration;
     }
 
-    setApiToken(key: string): void {
+    async setApiToken(key: string): Promise<void> {
     }
 
-    setDefaultProjectId(projectId: number): void {
+    async setDefaultProjectId(projectId: number): Promise<void> {
     }
 
-    setDefaultTimeEntry(timeEntryDescription: string): void {
+    async setDefaultTimeEntry(timeEntryDescription: string): Promise<void> {
     }
 
-    setDefaultWorkspaceId(workspaceId: number): void {
+    async setDefaultWorkspaceId(workspaceId: number): Promise<void> {
     }
 
 

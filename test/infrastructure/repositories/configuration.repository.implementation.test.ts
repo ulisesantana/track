@@ -4,7 +4,7 @@ import {Configuration} from "../../../src/core";
 import {ConfigurationRepositoryImplementation} from "../../../src/infrastructure/repositories";
 import {FileSystemDataSourceDouble} from "../../doubles";
 
-describe('ConfigurationRepositoryImplementation', () => {
+describe('ConfigurationRepositoryImplementation', async () => {
     const source = new FileSystemDataSourceDouble<Configuration>()
     const repository = new ConfigurationRepositoryImplementation(source)
 
@@ -12,7 +12,7 @@ describe('ConfigurationRepositoryImplementation', () => {
         source.clear()
     })
 
-    it('should correctly retrieve all configuration values', () => {
+    it('should correctly retrieve all configuration values', async () => {
         const config = {
             apiToken: 'testApiToken',
             defaultTimeEntry: 'testEntry',
@@ -21,32 +21,32 @@ describe('ConfigurationRepositoryImplementation', () => {
         }
         source.setData(config);
 
-        const configuration = repository.getAll();
+        const configuration = await repository.getAll();
 
         expect(configuration).to.deep.equal(config);
     });
 
-    it('should correctly set the API key', () => {
+    it('should correctly set the API key', async () => {
         const newApiToken = '09a786fg0qa78yg';
-        repository.setApiToken(newApiToken);
+        await repository.setApiToken(newApiToken);
         expect(source.db.apiToken).to.be.equal(newApiToken);
     });
 
-    it('should correctly set the default project ID', () => {
+    it('should correctly set the default project ID', async () => {
         const id = Math.floor(Math.random() * 10**8);
-        repository.setDefaultProjectId(id);
+        await repository.setDefaultProjectId(id);
         expect(source.db.projectId).to.be.equal(id);
     });
 
-    it('should correctly set the default time entry description', () => {
+    it('should correctly set the default time entry description', async () => {
         const description = 'Working';
-        repository.setDefaultTimeEntry(description);
+        await repository.setDefaultTimeEntry(description);
         expect(source.db.defaultTimeEntry).to.be.equal(description);
     });
 
-    it('should correctly set the default workspace ID', () => {
+    it('should correctly set the default workspace ID', async () => {
         const id = Math.floor(Math.random() * 10**8);
-        repository.setDefaultWorkspaceId(id);
+        await repository.setDefaultWorkspaceId(id);
         expect(source.db.workspaceId).to.be.equal(id);
     });
 

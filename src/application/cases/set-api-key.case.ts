@@ -10,6 +10,6 @@ export class SetApiTokenUseCase implements UseCase<Input, Output>{
   constructor(private readonly repository: ConfigurationRepository) {}
 
   async exec(apiToken: string) {
-    this.repository.setApiToken(apiToken)
+    await this.repository.setApiToken(apiToken)
   }
 }

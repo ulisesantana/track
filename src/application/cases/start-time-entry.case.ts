@@ -6,7 +6,7 @@ type Input = {
   description: string,
   project: number | string
 }
-type Output = Promise<void>
+type Output = Promise<TimeEntry>
 
 export class StartTimeEntryUseCase implements UseCase<Input, Output> {
 
@@ -17,10 +17,10 @@ export class StartTimeEntryUseCase implements UseCase<Input, Output> {
   ) {}
 
   async exec({description, project}: Input) {
-    const pid = await this.getProject(project);
-    await this.timeEntryRepository.createEntry(new TimeEntry({
+    const p = await this.getProject(project);
+    return this.timeEntryRepository.createEntry(new TimeEntry({
       description,
-      project: pid
+      project: p
     }), this.timeHelper.getCurrentUtcDate())
   }
 

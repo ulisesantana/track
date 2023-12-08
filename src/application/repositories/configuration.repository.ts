@@ -1,13 +1,13 @@
 import {Configuration} from "../../core";
 
 export interface ConfigurationRepository {
-    getAll(): Configuration
+    getAll(): Promise<Configuration>
 
-    setApiToken(key: string): void
+    setApiToken(key: string): Promise<void>
 
-    setDefaultProjectId(projectId: number): void
+    setDefaultProjectId(projectId: number): Promise<void>
 
-    setDefaultTimeEntry(timeEntryDescription: string): void
+    setDefaultTimeEntry(timeEntryDescription: string): Promise<void>
 
-    setDefaultWorkspaceId(workspaceId: number): void
+    setDefaultWorkspaceId(workspaceId: number): Promise<void>
 }

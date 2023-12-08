@@ -1,26 +1,32 @@
-import {expect, test} from '@oclif/test'
+import {Config, ux} from "@oclif/core";
+import {expect} from '@oclif/test'
 import {EOL} from "node:os";
+import path from "node:path";
+import {SinonSandbox, SinonStub, createSandbox} from "sinon";
 
-import ConfigCommand from '../../../src/commands/config'
-import {defaultConfiguration} from "../../../src/core";
+import {configuration} from "../../fixtures";
 
-const error = new Error('Something weird happened');
 describe('config command runs', () => {
+  let sandbox: SinonSandbox
+  let config: Config
+  let stdoutStub: SinonStub
 
-  test
-  .stdout()
-  .stub(ConfigCommand.configurationRepository, 'getAll', (stub) => stub.resolves(defaultConfiguration))
-  .command(['config'])
-  .it('showing config successfully', ctx => {
-    const expectedOutput = Object.entries(defaultConfiguration).map(([k,v]) => ` - ${k}: ${v}`).join(EOL)
-    expect(ctx.stdout).to.contain(expectedOutput)
+  beforeEach(async () => {
+    sandbox = createSandbox()
+    stdoutStub = sandbox.stub(ux.write, 'stdout')
+    config = await Config.load({root: process.cwd()})
+    config.configDir = path.join(process.cwd(), 'test/fixtures')
   })
 
-  test
-  .stdout()
-  .stub(ConfigCommand.configurationRepository, 'getAll', (stub) => stub.rejects(error))
-  .command(['config'])
-  .it('showing an error while retrieving config', ctx => {
-    expect(ctx.stdout).to.contain(`There was an error trying to get your config. Detailed error:${EOL}${error}`)
+  afterEach(async () => {
+    sandbox.restore()
+  })
+
+  it('showing config successfully', async () => {
+    const expectedOutput = Object.entries(configuration).map(([k,v]) => ` - ${k}: ${v}`).join(EOL)
+
+    await config.runCommand("config")
+
+    expect(stdoutStub.args.flat().join('')).to.contains(expectedOutput)
   })
 })

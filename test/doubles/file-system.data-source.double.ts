@@ -5,19 +5,19 @@ export class FileSystemDataSourceDouble<T> extends FileDb<T> {
          super();
      }
 
-    clear(): void {
+    async clear(): Promise<void> {
         this.db = {}
     }
 
-    get(key: keyof T): T[keyof T] | undefined  {
+    async get(key: keyof T): Promise<T[keyof T] | undefined>  {
         return this.db[key]
     }
 
-    set(key: keyof T, value: T[keyof T]): void {
+    async set(key: keyof T, value: T[keyof T]): Promise<void> {
         this.db[key] = value
     }
 
-    setData(db: Partial<T>): void {
+    async setData(db: Partial<T>): Promise<void> {
         this.db = db
     }
 }

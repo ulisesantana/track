@@ -10,6 +10,6 @@ export class SetDefaultWorkspaceIdUseCase implements UseCase<Input, Output> {
     }
 
     async exec(workspaceId: number) {
-        this.repository.setDefaultWorkspaceId(workspaceId)
+        await this.repository.setDefaultWorkspaceId(workspaceId)
     }
 }

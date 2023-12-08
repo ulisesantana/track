@@ -10,7 +10,7 @@ export class GetConfigurationUseCase implements UseCase<Input, Output>{
 
   constructor(private readonly repository: ConfigurationRepository) {}
 
-  async exec() {
+  exec() {
     return this.repository.getAll()
   }
 }

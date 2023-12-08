@@ -1,70 +1,91 @@
+/* eslint-disable camelcase */
+import {Axios, AxiosResponse} from "axios";
+
 import {Nullable} from "../../core";
-import {FetchFunction, TogglProject, TogglTimeEntry} from "../types";
+import {TogglProject, TogglTimeEntry} from "../types";
 
 export interface TogglApiParams {
-    baseUrl?: string
-    fetch: FetchFunction
+    axios: Axios
     token: string
     workspaceId: number
 }
 
 export class TogglApi {
-    private readonly baseUrl: string
-    private readonly basicHeaders: Headers
-    private readonly fetch: FetchFunction
+    static baseUrl = "https://api.track.toggl.com"
+    private readonly axios: Axios
+    private readonly basicHeaders: Record<string, string>
     private readonly workspaceId: number
 
-    constructor({baseUrl, fetch, token, workspaceId}: TogglApiParams) {
-        this.fetch = fetch
-        this.baseUrl = baseUrl || "https://api.track.toggl.com/api/v9"
+    constructor({axios, token, workspaceId}: TogglApiParams) {
+        this.axios = axios
         this.workspaceId = workspaceId
-        this.basicHeaders = new Headers({
-            "Authorization": `Basic ${Buffer.from(token).toString('base64')}`,
+        this.basicHeaders = {
+            "Authorization": `Basic ${Buffer.from(token.includes(':') ? token : `${token}:api_token`).toString('base64')}`,
             "content-type": "application/json",
-        })
+        }
     }
 
     private static formatDate(date: Date): string {
         return date.toISOString().split('T').at(0)!
     }
 
+    private static validateResponse(response: AxiosResponse): never | void {
+        if (response.status >= 400) {
+            throw new Error(response.statusText)
+        }
+    }
+
     async createTimeEntry(entry: TogglTimeEntry, start: Date): Promise<TogglTimeEntry> {
-        const url = `${this.baseUrl}/workspaces/${this.workspaceId}/time_entries`
-        const response = await this.fetch(url, {
-            body: JSON.stringify({...entry, start: start.toISOString()}),
+        const url = `${TogglApi.baseUrl}/api/v9/workspaces/${this.workspaceId}/time_entries`
+        const body = {
+            ...entry,
+            created_with: "track CLI",
+            duration: -1,
+            start: start.toISOString(),
+            workspace_id: this.workspaceId
+        };
+        const response = await this.axios.post<TogglTimeEntry>(url, body, {
             headers: this.basicHeaders,
-            method: "POST",
         })
-        return await response.json() as TogglTimeEntry
+
+        TogglApi.validateResponse(response)
+
+        return response.data
     }
 
     async getCurrentEntry(): Promise<Nullable<TogglTimeEntry>> {
-        const url = `${this.baseUrl}/me/time_entries/current`
-        const response = await this.fetch(url, {
-            headers: this.basicHeaders,
-            method: "GET",
+        const url = `${TogglApi.baseUrl}/api/v9/me/time_entries/current`
+        const response = await this.axios.get(url, {
+            headers: this.basicHeaders
         })
-        return await response.json() as Nullable<TogglTimeEntry>
+
+        TogglApi.validateResponse(response)
+
+        return response.data
     }
 
     async getProjectById(id: number): Promise<Nullable<TogglProject>> {
-        const url = `${this.baseUrl}/workspaces/${this.workspaceId}/projects/${id}`
-        const response = await this.fetch(url, {
-            headers: this.basicHeaders,
-            method: "GET",
+        const url = `${TogglApi.baseUrl}/api/v9/workspaces/${this.workspaceId}/projects/${id}`
+        const response = await this.axios.get(url, {
+            headers: this.basicHeaders
         })
-        const project = await response.json()
+
+        TogglApi.validateResponse(response)
+
+        const project = response.data
         return typeof project === "string" ? null : project as TogglProject
     }
 
     async getProjects(): Promise<Array<TogglProject>> {
         const queryString = new URLSearchParams({active: "true"})
-        const url = `${this.baseUrl}/workspaces/${this.workspaceId}/projects?${queryString}`
-        const response = await this.fetch(url, {
+        const url = `${TogglApi.baseUrl}/api/v9/workspaces/${this.workspaceId}/projects?${queryString}`
+        const response = await this.axios.get(url, {
             headers: this.basicHeaders,
-            method: "GET",
         })
-        return await response.json() as Array<TogglProject>
+
+        TogglApi.validateResponse(response)
+
+        return response.data
     }
 
     async getTimeEntries(from?: Date, to?: Date): Promise<Array<TogglTimeEntry>> {
@@ -85,23 +106,26 @@ export class TogglApi {
         }
 
         const url = [...queryString.entries()].length > 0
-            ? `${this.baseUrl}/me/time_entries`
-            : `${this.baseUrl}/me/time_entries?${queryString}`
-        const response = await this.fetch(url, {
+            ? `${TogglApi.baseUrl}/api/v9/me/time_entries`
+            : `${TogglApi.baseUrl}/api/v9/me/time_entries?${queryString}`
+        const response = await this.axios.get(url, {
             headers: this.basicHeaders,
-            method: "GET",
         })
-        return await response.json() as Array<TogglTimeEntry>
+
+        TogglApi.validateResponse(response)
+
+        return response.data
     }
 
     async updateTimeEntry(id: number, update: Partial<TogglTimeEntry>): Promise<TogglTimeEntry> {
-        const url = `${this.baseUrl}/workspaces/${this.workspaceId}/time_entries/${id}`
-        const response = await this.fetch(url, {
-            body: JSON.stringify({...update}),
+        const url = `${TogglApi.baseUrl}/api/v9/workspaces/${this.workspaceId}/time_entries/${id}`
+        const response = await this.axios.put(url, update, {
             headers: this.basicHeaders,
-            method: "PUT",
         })
-        return await response.json() as TogglTimeEntry
+
+        TogglApi.validateResponse(response)
+
+        return response.data
     }
 }
 

@@ -10,6 +10,6 @@ export class SetDefaultProjectUseCase implements UseCase<Input, Output>{
   constructor(private readonly repository: ConfigurationRepository) {}
 
   async exec(projectId: number) {
-    this.repository.setDefaultProjectId(projectId)
+    await this.repository.setDefaultProjectId(projectId)
   }
 }

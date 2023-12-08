@@ -10,6 +10,6 @@ export class SetDefaultTimeEntryDescriptionUseCase implements UseCase<Input, Out
   constructor(private readonly repository: ConfigurationRepository) {}
 
   async exec(timeEntryDescription: string) {
-    this.repository.setDefaultTimeEntry(timeEntryDescription)
+    await this.repository.setDefaultTimeEntry(timeEntryDescription)
   }
 }

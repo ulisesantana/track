@@ -2,7 +2,7 @@ import {Duration, TimeEntry, TimeEntryParams} from "../../src/core";
 import {buildProject} from "./project.builder";
 
 type TimeEntryBuilderParams = Partial<Omit<TimeEntryParams, 'duration'> & {
-    duration: number
+    duration?: number
 }>
 export function buildTimeEntry({description, duration, id, project}: TimeEntryBuilderParams = {}) {
     return new TimeEntry({

@@ -1,14 +1,12 @@
 import {Command} from '@oclif/core'
-import createConfigurationStore from 'configuration-store';
+import path from "node:path";
 
 import {GetConfigurationUseCase} from "../../application/cases";
-import {ConfigurationRepository} from "../../application/repositories";
-import {Configuration, configFilename} from "../../core";
+import {configFilename} from "../../core";
+import {FileSystemDataSource} from "../../infrastructure/data-sources";
 import {ConfigurationRepositoryImplementation} from "../../infrastructure/repositories";
 
 export default class Config extends Command {
-  static configurationRepository: ConfigurationRepository = new ConfigurationRepositoryImplementation(createConfigurationStore<Configuration>({filename: configFilename}))
-
   static description = 'Get your config for track CLI.'
 
   static examples = [
@@ -16,7 +14,8 @@ export default class Config extends Command {
   ]
 
   public async run(): Promise<void> {
-    const useCase = new GetConfigurationUseCase(Config.configurationRepository)
+    const configurationRepository = new ConfigurationRepositoryImplementation(new FileSystemDataSource(path.join(this.config.configDir, configFilename)))
+    const useCase = new GetConfigurationUseCase(configurationRepository)
     try {
       const config = await useCase.exec()
       this.log('Your config for track CLI:')

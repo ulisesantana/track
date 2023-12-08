@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import {StartTimeEntryUseCase} from '../../../src/application/cases'
 import {ProjectRepository, TimeEntryRepository} from "../../../src/application/repositories";
 import {ProjectNotFoundError, TimeHelper} from '../../../src/core';
-import {buildProject} from "../../builders";
+import {buildProject, buildTimeEntry} from "../../builders";
 import {ProjectRepositoryDouble, TimeEntryRepositoryDouble} from "../../doubles";
 
 describe('StartTimeEntryUseCase', () => {
@@ -27,12 +27,13 @@ describe('StartTimeEntryUseCase', () => {
 
     it('should start a time entry with a valid project ID', async () => {
         const input = {description: 'Test Task', project: 123};
-        timeEntryRepositoryMock.createEntry.resolves();
+        timeEntryRepositoryMock.createEntry.resolves(buildTimeEntry({...input, project: buildProject({id: input.project})}));
         projectRepositoryMock.getProjectByName.resolves(null);
         useCase = new StartTimeEntryUseCase(timeEntryRepositoryMock, projectRepositoryMock)
 
-        await useCase.exec(input);
+        const result = await useCase.exec(input);
 
+        expect(result.description).to.equal(input.description)
         sinon.assert.calledWith(timeEntryRepositoryMock.createEntry, sinon.match.has('description', input.description));
     });
 
