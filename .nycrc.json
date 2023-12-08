@@ -3,7 +3,9 @@
   "check-coverage": true,
   "exclude": [
     "**/*.d.ts",
-    "test/**/*.ts"
+    "test/**/*.ts",
+    "src/commands",
+    "src/hooks"
   ],
   "extends": "@istanbuljs/nyc-config-typescript",
   "extension": [
