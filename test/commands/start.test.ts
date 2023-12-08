@@ -30,7 +30,6 @@ describe('start command runs', () => {
         mock.reset()
     })
 
-
     it('creating entry by passing all arguments and flags', async () => {
         const [evilProject] = projects
         const {id, name} = evilProject
@@ -87,6 +86,30 @@ describe('start command runs', () => {
         await config.runCommand("start")
 
         expect(stdoutStub.args.flat().join(',')).to.contains(`Started time entry "${configuration.defaultTimeEntry}" for "${name}" project.`)
+    })
+
+    it('showing error if description is missing and default time entry description is not defined', async () => {
+        config.configDir = path.join(process.cwd(), 'test/fixtures/min-config')
+        const [evilProject] = projects
+        const {id} = evilProject
+
+        try {
+            await config.runCommand("start", ["-p", id.toString()])
+            throw new Error('Start command should throw error')
+        } catch (error) {
+            expect(`${error}`).to.contains("Missing time entry description argument")
+        }
+    })
+
+    it('showing error if project is missing and default project id is not defined', async () => {
+        config.configDir = path.join(process.cwd(), 'test/fixtures/min-config')
+
+        try {
+            await config.runCommand("start", ["Doing stuff"])
+            throw new Error('Start command should throw error')
+        } catch (error) {
+            expect(`${error}`).to.contains("Missing project flag for the time entry.")
+        }
     })
 
 })
