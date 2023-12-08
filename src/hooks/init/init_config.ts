@@ -15,6 +15,7 @@ const hook: Hook<'init'> = async function (opts) {
         }
 
         await fs.writeJSON(filePath, {})
+        this.log(`Config file created at "${filePath}".`)
     }
 }
 

@@ -19,8 +19,6 @@ interface ConfigSetFlags {
     workspace: number
 }
 
-type ConfigSetFlagsValues = ConfigSetFlags[keyof ConfigSetFlags]
-
 export default class ConfigSet extends Command {
     static description = 'Set your configuration for track CLI'
 
@@ -35,52 +33,65 @@ export default class ConfigSet extends Command {
         workspace: Flags.integer({char: 'w', description: 'Set a default workspace id for your time entries.'}),
     }
 
-    private static async execUseCaseFor(flag: keyof ConfigSetFlags, value: ConfigSetFlagsValues, repository: ConfigurationRepository): Promise<{
-        error: boolean
-        message: string,
+    // It's ugly as fuck, but you need to give some time to the file system to avoid race conditions
+    private static async executeUseCases(flags: ConfigSetFlags, repository: ConfigurationRepository): Promise<{
+        errors: string[]
+        success: string[],
     }> {
-        try {
-            if (flag === "project") {
-                await new SetDefaultProjectUseCase(repository).exec(value as number)
-                return {error: false, message: `✅ Default project set to ${value}.`}
+        const success = []
+        const errors = []
+        if (flags.project) {
+            try {
+                await new SetDefaultProjectUseCase(repository).exec(flags.project as number)
+                success.push(`✅ Default project set to ${flags.project}.`)
+            } catch {
+                errors.push("⚠️ Error updating default project.")
             }
-
-            if (flag === "workspace") {
-                await new SetDefaultWorkspaceIdUseCase(repository).exec(value as number)
-                return {error: false, message: `✅ Default workspace set to ${value}.`}
-            }
-
-            if (flag === "token") {
-                await new SetApiTokenUseCase(repository).exec(value as string)
-                return {error: false, message: `✅ Toggl API token set to ${value}.`}
-            }
-
-            await new SetDefaultTimeEntryDescriptionUseCase(repository).exec(value as string)
-            return {error: false, message: `✅ Default time entry description set to "${value}".`}
-        } catch {
-            if (flag === "project") return {error: true, message: "⚠️ Error updating default project."}
-            if (flag === "workspace") return {error: true, message: "⚠️ Error updating default workspace."}
-            if (flag === "token") return {error: true, message: "⚠️ Error updating Toggl API token."}
-            return {error: true, message: "⚠️ Error updating default time entry description."}
         }
 
+        if (flags.workspace) {
+            try {
+                await new SetDefaultWorkspaceIdUseCase(repository).exec(flags.workspace as number)
+                success.push(`✅ Default workspace set to ${flags.workspace}.`)
+            } catch {
+                errors.push("⚠️ Error updating default workspace.")
+            }
+        }
 
+        if (flags.token) {
+            try {
+                await new SetApiTokenUseCase(repository).exec(flags.token as string)
+                success.push(`✅ Toggl API token set to ${flags.token}.`)
+            } catch {
+                errors.push("⚠️ Error updating Toggl API token.")
+            }
+        }
+
+        if (flags.description) {
+            try {
+                await new SetDefaultTimeEntryDescriptionUseCase(repository).exec(flags.description as string)
+                success.push(`✅ Default time entry description set to "${flags.description}".`)
+            } catch {
+                errors.push("⚠️ Error updating default time entry description.")
+            }
+        }
+
+        return {errors, success}
     }
 
     public async run(): Promise<void> {
         const {flags} = await this.parse(ConfigSet)
-        const flagEntries = Object.entries(flags)
-        if (flagEntries.length === 0) {
+        if (Object.entries(flags).length === 0) {
             this.log('Missing properties to set. Check command help.')
             return
         }
 
-        const configurationRepository = new ConfigurationRepositoryImplementation(new FileSystemDataSource(path.join(this.config.configDir, configFilename)))
-        const updates = flagEntries.map(([k, v]) => ConfigSet.execUseCaseFor(k as keyof ConfigSetFlags, v, configurationRepository))
-        const messages = await Promise.all(updates)
-        const success = messages.filter(({error}) => !error).map(({message}) => message).sort()
-        const errors = messages.filter(({error}) => error).map(({message}) => message).sort()
-        for (const message of [...success, ...errors]) {
+        const repository = new ConfigurationRepositoryImplementation(
+            new FileSystemDataSource(path.join(this.config.configDir, configFilename))
+        )
+        const {errors, success} = await ConfigSet.executeUseCases(flags as ConfigSetFlags, repository)
+
+        for (const message of [...success.sort(), ...errors.sort()]) {
             this.log(` - ${message}`)
         }
     }
