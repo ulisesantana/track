@@ -27,7 +27,7 @@ describe('start command runs', () => {
 
     afterEach(async () => {
         sandbox.restore()
-        mock.restore()
+        mock.reset()
     })
 
 
@@ -45,8 +45,48 @@ describe('start command runs', () => {
         expect(stdoutStub.args.flat().join(',')).to.contains(`Started time entry "${configuration.defaultTimeEntry}" for "${name}" project.`)
     })
 
-    it('creating entry using default project')
-    it('creating entry using default time entry')
-    it('creating entry using default time entry and default project')
+    it('creating entry using default project', async () => {
+        const projects = [buildTogglProject({id: configuration.projectId, name: 'Evil Company'}), buildTogglProject({name: 'Good Company'})]
+        const [evilProject] = projects
+        const {id, name} = evilProject
+        mock
+            .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects/${id}`)
+            .reply(200, evilProject)
+            .onPost(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/time_entries`)
+            .reply(200, buildTogglTimeEntry({description: configuration.defaultTimeEntry, project_id: id}))
+
+        await config.runCommand("start", [configuration.defaultTimeEntry])
+
+        expect(stdoutStub.args.flat().join(',')).to.contains(`Started time entry "${configuration.defaultTimeEntry}" for "${name}" project.`)
+    })
+
+    it('creating entry using default time entry', async () => {
+        const [evilProject] = projects
+        const {id, name} = evilProject
+        mock
+            .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects/${id}`)
+            .reply(200, evilProject)
+            .onPost(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/time_entries`)
+            .reply(200, buildTogglTimeEntry({description: configuration.defaultTimeEntry, project_id: id}))
+
+        await config.runCommand("start", ["-p", id.toString()])
+
+        expect(stdoutStub.args.flat().join(',')).to.contains(`Started time entry "${configuration.defaultTimeEntry}" for "${name}" project.`)
+    })
+
+    it('creating entry using default time entry and default project', async () => {
+        const projects = [buildTogglProject({id: configuration.projectId, name: 'Evil Company'}), buildTogglProject({name: 'Good Company'})]
+        const [evilProject] = projects
+        const {id, name} = evilProject
+        mock
+            .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects/${id}`)
+            .reply(200, evilProject)
+            .onPost(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/time_entries`)
+            .reply(200, buildTogglTimeEntry({description: configuration.defaultTimeEntry, project_id: id}))
+
+        await config.runCommand("start")
+
+        expect(stdoutStub.args.flat().join(',')).to.contains(`Started time entry "${configuration.defaultTimeEntry}" for "${name}" project.`)
+    })
 
 })
