@@ -56,7 +56,7 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
     }
 
     async getCurrentEntry(): Promise<Nullable<TimeEntry>> {
-        const [entry] = await this.api.getTimeEntries()
+        const entry = await this.api.getCurrentEntry()
         if (!entry) {
             return null
         }
@@ -106,7 +106,7 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
             return null
         }
 
-        const project = await this.api.getProjectById(entry.id)
+        const project = await this.api.getProjectById(entry.project_id)
         return TimeEntryRepositoryImplementation.mapToTimeEntry(entry, project)
     }
 }

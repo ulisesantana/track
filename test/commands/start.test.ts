@@ -1,16 +1,17 @@
 /* eslint-disable camelcase */
 import {Config, ux} from '@oclif/core'
-import axios from 'axios';
-import MockAdapter from "axios-mock-adapter";
-import {expect} from 'chai'
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import path from "node:path";
 import {SinonSandbox, SinonStub, createSandbox} from 'sinon'
 
 import {TogglApi} from "../../src/infrastructure/data-sources";
 import {buildTogglProject, buildTogglTimeEntry} from "../builders";
 import {configuration} from "../fixtures";
+import httpMock from "../http.mock"
 
-const mock = new MockAdapter(axios); // here uses axios because here we are testing the command, which uses transpiled code.
+chai.use(chaiAsPromised);
+const {expect} = chai;
 
 describe('start command runs', () => {
     const projects = [buildTogglProject({name: 'Evil Company'}), buildTogglProject({name: 'Good Company'})]
@@ -27,13 +28,13 @@ describe('start command runs', () => {
 
     afterEach(async () => {
         sandbox.restore()
-        mock.reset()
+        httpMock.reset()
     })
 
     it('creating entry by passing all arguments and flags', async () => {
         const [evilProject] = projects
         const {id, name} = evilProject
-        mock.onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects?active=true`)
+        httpMock.onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects?active=true`)
             .reply(200, projects)
             .onPost(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/time_entries`)
             .reply(200, buildTogglTimeEntry({description: configuration.defaultTimeEntry, project_id: id}))
@@ -44,10 +45,13 @@ describe('start command runs', () => {
     })
 
     it('creating entry using default project', async () => {
-        const projects = [buildTogglProject({id: configuration.projectId, name: 'Evil Company'}), buildTogglProject({name: 'Good Company'})]
+        const projects = [buildTogglProject({
+            id: configuration.projectId,
+            name: 'Evil Company'
+        }), buildTogglProject({name: 'Good Company'})]
         const [evilProject] = projects
         const {id, name} = evilProject
-        mock
+        httpMock
             .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects/${id}`)
             .reply(200, evilProject)
             .onPost(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/time_entries`)
@@ -61,7 +65,7 @@ describe('start command runs', () => {
     it('creating entry using default time entry', async () => {
         const [evilProject] = projects
         const {id, name} = evilProject
-        mock
+        httpMock
             .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects/${id}`)
             .reply(200, evilProject)
             .onPost(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/time_entries`)
@@ -73,10 +77,13 @@ describe('start command runs', () => {
     })
 
     it('creating entry using default time entry and default project', async () => {
-        const projects = [buildTogglProject({id: configuration.projectId, name: 'Evil Company'}), buildTogglProject({name: 'Good Company'})]
+        const projects = [buildTogglProject({
+            id: configuration.projectId,
+            name: 'Evil Company'
+        }), buildTogglProject({name: 'Good Company'})]
         const [evilProject] = projects
         const {id, name} = evilProject
-        mock
+        httpMock
             .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects/${id}`)
             .reply(200, evilProject)
             .onPost(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/time_entries`)
@@ -92,23 +99,15 @@ describe('start command runs', () => {
         const [evilProject] = projects
         const {id} = evilProject
 
-        try {
-            await config.runCommand("start", ["-p", id.toString()])
-            throw new Error('Start command should throw error')
-        } catch (error) {
-            expect(`${error}`).to.contains("Missing time entry description argument")
-        }
+        await expect(config.runCommand("start", ["-p", id.toString()]))
+            .to.be.rejectedWith("Missing time entry description argument")
     })
 
     it('showing error if project is missing and default project id is not defined', async () => {
         config.configDir = path.join(process.cwd(), 'test/fixtures/min-config')
 
-        try {
-            await config.runCommand("start", ["Doing stuff"])
-            throw new Error('Start command should throw error')
-        } catch (error) {
-            expect(`${error}`).to.contains("Missing project flag for the time entry.")
-        }
+        await expect(config.runCommand("start", ["Doing stuff"]))
+            .to.be.rejectedWith("Missing project flag for the time entry.")
     })
 
 })

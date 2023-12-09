@@ -35,7 +35,7 @@ describe('TimeEntryRepositoryImplementation', () => {
     it('should retrieve the current time entry when it exists', async () => {
         const mockProject = buildTogglProject();
         const mockEntry = buildTogglTimeEntry({project_id: mockProject.id});
-        apiMock.getTimeEntries.resolves([mockEntry]);
+        apiMock.getCurrentEntry.resolves(mockEntry);
         apiMock.getProjectById.resolves(mockProject);
 
         const result = await repository.getCurrentEntry();
