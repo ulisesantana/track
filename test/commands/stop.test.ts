@@ -5,7 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import path from "node:path";
 import {SinonSandbox, SinonStub, createSandbox} from 'sinon'
 
-import {TogglApi} from "../../dist/infrastructure/data-sources"; // here uses dist directory because here we are testing the command, which uses transpiled code.
+import {TogglApi} from "../../src/infrastructure/data-sources";
 import {buildTogglProject, buildTogglTimeEntry} from "../builders";
 import {configuration} from "../fixtures";
 import httpMock from "../http.mock";

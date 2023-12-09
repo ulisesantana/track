@@ -5,8 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-
-import {http} from "../../../dist/infrastructure/data-sources/http";
+import {http} from "../../../dist/infrastructure/data-sources"; // dist directory is not an error. Is due to how commands are tested based on transpiled code.
 import {TogglApi} from "../../../src/infrastructure/data-sources";
 import {AuthorizationError, NotFoundError, RequestError, ServerError} from "../../../src/infrastructure/errors";
 import {buildTogglProject, buildTogglTimeEntry} from "../../builders";
