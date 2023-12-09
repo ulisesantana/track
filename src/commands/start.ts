@@ -1,10 +1,9 @@
 import {Args, Command, Flags} from '@oclif/core'
-import axios from "axios";
 import path from "node:path";
 
 import {GetConfigurationUseCase, StartTimeEntryUseCase} from "../application/cases";
 import {ConfigurationValidator, configFilename} from "../core";
-import {FileSystemDataSource, TogglApi} from "../infrastructure/data-sources";
+import {FileSystemDataSource, TogglApi, http} from "../infrastructure/data-sources";
 import {
     ConfigurationRepositoryImplementation,
     ProjectRepositoryImplementation,
@@ -47,7 +46,7 @@ export default class Start extends Command {
         }
 
         const togglAPI = new TogglApi({
-            axios, token: config.apiToken, workspaceId: config.workspaceId
+            http, token: config.apiToken, workspaceId: config.workspaceId
         })
         const projectRepository = new ProjectRepositoryImplementation(togglAPI)
         const timeEntryRepository = new TimeEntryRepositoryImplementation(togglAPI)

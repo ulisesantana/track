@@ -66,9 +66,9 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
     }
 
     async getCurrentWeekEntries(): Promise<TimeEntryList> {
-        const [start, end] = this.time.getWeekDates(new Date())
+        const [from, to] = this.time.getWeekDates(new Date())
         const [entries, projects] = await Promise.all([
-            this.api.getTimeEntries(start, end),
+            this.api.getTimeEntries({from, to}),
             this.api.getProjects()
         ])
         if (entries.length === 0) {
@@ -91,7 +91,7 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
     async getTodayEntries(): Promise<TimeEntryList> {
         const today = new Date()
         today.setHours(0, 0, 0, 0)
-        const entries = await this.api.getTimeEntries(today)
+        const entries = await this.api.getTimeEntries({from: today})
         if (entries.length === 0) {
             return new TimeEntryList([])
         }
