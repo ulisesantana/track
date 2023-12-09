@@ -122,7 +122,6 @@ export class TogglApi {
             const url = [...queryString.entries()].length === 0
                 ? `${TogglApi.baseUrl}/api/v9/me/time_entries`
                 : `${TogglApi.baseUrl}/api/v9/me/time_entries?${queryString}`
-            console.log(url, [...queryString.entries()])
             const response = await this.http.get(url, {
                 headers: this.basicHeaders,
             })
