@@ -73,6 +73,7 @@
       }
     }
   },
+  "packageManager": "yarn@1.22.21",
   "repository": "ulisesantana/track",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
