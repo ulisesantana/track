@@ -1,12 +1,10 @@
-import {Command} from '@oclif/core'
-import path from "node:path";
+import {StopCurrentTimeEntryUseCase} from "../application/cases";
+import {configFilename} from "../core";
+import {TogglApi, http} from "../infrastructure/data-sources";
+import {TimeEntryRepositoryImplementation} from "../infrastructure/repositories";
+import {TrackCommand} from "../infrastructure/track-command";
 
-import {GetConfigurationUseCase, StopCurrentTimeEntryUseCase} from "../application/cases";
-import {ConfigurationValidator, configFilename} from "../core";
-import {FileSystemDataSource, TogglApi, http} from "../infrastructure/data-sources";
-import {ConfigurationRepositoryImplementation, TimeEntryRepositoryImplementation} from "../infrastructure/repositories";
-
-export default class Stop extends Command {
+export default class Stop extends TrackCommand {
   static description = 'Stop running time entry.'
 
   static examples = [
@@ -14,13 +12,7 @@ export default class Stop extends Command {
   ]
 
   public async run(): Promise<void> {
-    const configurationRepository = new ConfigurationRepositoryImplementation(new FileSystemDataSource(path.join(this.config.configDir, configFilename)))
-    const config = await new GetConfigurationUseCase(configurationRepository).exec()
-    const configValidation = ConfigurationValidator.isRequiredConfigAvailable(config)
-    if (configValidation.error) {
-      this.error(configValidation.message)
-    }
-
+    const config = await this.getConfig(configFilename)
     const togglAPI = new TogglApi({
       http,
       token: config.apiToken,

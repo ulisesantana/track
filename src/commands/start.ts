@@ -1,16 +1,12 @@
-import {Args, Command, Flags} from '@oclif/core'
-import path from "node:path";
+import {Args, Flags} from '@oclif/core'
 
-import {GetConfigurationUseCase, StartTimeEntryUseCase} from "../application/cases";
-import {ConfigurationValidator, configFilename} from "../core";
-import {FileSystemDataSource, TogglApi, http} from "../infrastructure/data-sources";
-import {
-    ConfigurationRepositoryImplementation,
-    ProjectRepositoryImplementation,
-    TimeEntryRepositoryImplementation
-} from "../infrastructure/repositories";
+import {StartTimeEntryUseCase} from "../application/cases";
+import {configFilename} from "../core";
+import {TogglApi, http} from "../infrastructure/data-sources";
+import {ProjectRepositoryImplementation, TimeEntryRepositoryImplementation} from "../infrastructure/repositories";
+import {TrackCommand} from "../infrastructure/track-command";
 
-export default class Start extends Command {
+export default class Start extends TrackCommand {
     static args = {
         description: Args.string({description: 'Time entry description.'}),
     }
@@ -25,12 +21,7 @@ export default class Start extends Command {
     }
 
     public async run(): Promise<void> {
-        const configurationRepository = new ConfigurationRepositoryImplementation(new FileSystemDataSource(path.join(this.config.configDir, configFilename)))
-        const config = await new GetConfigurationUseCase(configurationRepository).exec()
-        const configValidation = ConfigurationValidator.isRequiredConfigAvailable(config)
-        if (configValidation.error) {
-            this.error(configValidation.message)
-        }
+        const config = await this.getConfig(configFilename)
 
         const {args, flags} = await this.parse(Start)
         if (!config.defaultTimeEntry && !args.description) {
