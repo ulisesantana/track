@@ -25,7 +25,7 @@ export class Duration {
     }
 
     toString() {
-        return `${TimeHelper.secondsToHmsString(this.value as number)}`
+        return `${TimeHelper.secondsToHmsString(this.value)}`
     }
 
 }
