@@ -104,8 +104,10 @@ export class TogglApi {
     async getTimeEntries({from, to}: { from?: Date, to?: Date } = {}): Promise<Array<TogglTimeEntry>> {
         const queryString = new URLSearchParams()
         if (from && !to) {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
             queryString.set('start_date', TogglApi.formatDate(from))
-            queryString.set('end_date', TogglApi.formatDate(new Date()))
+            queryString.set('end_date', TogglApi.formatDate(tomorrow))
         }
 
         if (!from && to) {
