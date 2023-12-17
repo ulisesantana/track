@@ -13,15 +13,8 @@ import httpMock from "../http.mock";
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-describe('today command runs', () => {
+describe('week command runs', () => {
   const projects = [buildTogglProject({id: 1, name: 'Evil Company'}), buildTogglProject({id: 2, name: 'Good Company'})]
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(today.getDate() + 1)
-  const queryString = new URLSearchParams()
-  queryString.set('start_date', today.toISOString().split('T').at(0)!)
-  queryString.set('end_date', tomorrow.toISOString().split('T').at(0)!)
   let sandbox: SinonSandbox
   let config: Config
   let stdoutStub: SinonStub
@@ -38,7 +31,7 @@ describe('today command runs', () => {
     httpMock.reset()
   })
 
-  it('showing today report listing all entries', async () => {
+  it('showing current week report grouping entries by description', async () => {
     const [evilProject] = projects
     const {id} = evilProject
     const entries = [
@@ -46,26 +39,27 @@ describe('today command runs', () => {
         buildTogglTimeEntry({project_id: id})
     ]
     httpMock
-        .onGet(`${TogglApi.baseUrl}/api/v9/me/time_entries?${queryString}`)
+        .onGet(/\/me\/time_entries/)
         .reply(200, entries)
         .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects?active=true`)
         .reply(200, projects)
 
-    await config.runCommand("today")
+    await config.runCommand("week")
 
     expect(stdoutStub.args.flat().join(',')).to.contains(`01h 00m 00s
-  - 00h 30m 00s - Dummy time entry (Evil Company)
-  - 00h 30m 00s - Dummy time entry (Evil Company)`)
+  - 01h 00m 00s - Dummy time entry (Evil Company)`)
   })
 
-  it('showing there is no entries for today', async () => {
+  it('showing there is no entries for from', async () => {
     httpMock
-        .onGet(`${TogglApi.baseUrl}/api/v9/me/time_entries?${queryString}`)
+        .onGet(/\/me\/time_entries/)
         .reply(200, [])
+        .onGet(`${TogglApi.baseUrl}/api/v9/workspaces/${configuration.workspaceId}/projects?active=true`)
+        .reply(200, projects)
 
-    await config.runCommand("today")
+    await config.runCommand("week")
 
-    expect(stdoutStub.args.flat().join(',')).to.contains(`There are no entries for today.`)
+    expect(stdoutStub.args.flat().join(',')).to.contains(`There are no entries for the current week.`)
   })
 
 })

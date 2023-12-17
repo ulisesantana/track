@@ -13,6 +13,6 @@ export class GetTodayReportUseCase implements UseCase<Input, Output>{
 
   async exec() {
     const entries = await this.timeEntryRepository.getTodayEntries()
-    return new Report(entries.groupEntriesByDescription())
+    return new Report(entries)
   }
 }
