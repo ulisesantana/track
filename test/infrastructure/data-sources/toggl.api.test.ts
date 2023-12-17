@@ -204,6 +204,7 @@ describe('Toggl API should', () => {
         it('with from date', async () => {
             const from = new Date('2023-05-15')
             const to = new Date()
+            to.setDate(to.getDate() + 1)
             httpMock
                 .onGet(`${TogglApi.baseUrl}/api/v9/me/time_entries?start_date=${formatDate(from)}&end_date=${formatDate(to)}`)
                 .reply(200, entries)
