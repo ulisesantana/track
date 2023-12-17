@@ -1,6 +1,5 @@
 import {Config, ux} from "@oclif/core";
 import {expect} from '@oclif/test'
-import {EOL} from "node:os";
 import path from "node:path";
 import {SinonSandbox, SinonStub, createSandbox} from "sinon";
 
@@ -23,7 +22,7 @@ describe('config command runs', () => {
   })
 
   it('showing config successfully', async () => {
-    const expectedOutput = Object.entries(configuration).map(([k,v]) => ` - ${k}: ${v}`).join(EOL)
+    const expectedOutput = Object.entries(configuration).map(([k,v]) => ` - ${k}: ${v}`).join('\n')
 
     await config.runCommand("config")
 
