@@ -78,6 +78,18 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
         return TimeEntryRepositoryImplementation.mapToTimeEntryList(entries, projects)
     }
 
+    async getEntries({from, to}: {from?: Date, to?: Date} = {}): Promise<TimeEntryList> {
+        from && from.setHours(0, 0, 0, 0)
+        to && to.setHours(0, 0, 0, 0) && to.setDate(to.getDate() + 1)
+        const entries = await this.api.getTimeEntries({from, to})
+        if (entries.length === 0) {
+            return new TimeEntryList([])
+        }
+
+        const projects = await this.api.getProjects()
+        return TimeEntryRepositoryImplementation.mapToTimeEntryList(entries, projects)
+    }
+
     async getLastEntry(): Promise<Nullable<TimeEntry>> {
         const [entry] = await this.api.getTimeEntries()
         if (!entry) {

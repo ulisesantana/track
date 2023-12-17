@@ -2,7 +2,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 
-import {TimeEntry, TimeEntryList, TimeHelper} from "../../../src/core";
+import {TimeEntryList, TimeHelper} from "../../../src/core";
 import {TogglApi} from "../../../src/infrastructure/data-sources";
 import {TimeEntryRepositoryImplementation} from "../../../src/infrastructure/repositories";
 import {buildProject, buildTimeEntry, buildTogglProject, buildTogglTimeEntry} from "../../builders";
@@ -139,26 +139,26 @@ describe('TimeEntryRepositoryImplementation', () => {
         expect(result).to.be.null;
     });
 
-    it('should correctly map TogglTimeEntry to TimeEntry', () => {
-        const project = buildProject()
-        const togglTimeEntry = buildTogglTimeEntry()
-        const timeEntry = TimeEntryRepositoryImplementation.mapToTimeEntry(togglTimeEntry, project);
 
-        expect(timeEntry).to.be.an.instanceof(TimeEntry);
-        expect(timeEntry).to.deep.equal(buildTimeEntry({...togglTimeEntry, project}))
-    });
-
-    it('should correctly map an array of TogglTimeEntry to TimeEntryList', () => {
-        const projects = [buildTogglProject(), buildTogglProject()];
-        const togglTimeEntries = projects.flatMap(p => [
+    it('should return entries from and to a given dates', async () => {
+        const from = new Date('2023-12-24')
+        const to = new Date('2023-12-26')
+        const mockProjects = [buildTogglProject(), buildTogglProject()];
+        const mockEntries = mockProjects.flatMap(p => [
             buildTogglTimeEntry({project_id: p.id}),
             buildTogglTimeEntry({project_id: p.id})
         ])
-        const timeEntryList = TimeEntryRepositoryImplementation.mapToTimeEntryList(togglTimeEntries, projects);
+        apiMock.getTimeEntries.resolves(mockEntries);
+        apiMock.getProjects.resolves(mockProjects)
 
-        expect(timeEntryList).to.be.an.instanceof(TimeEntryList);
-        expect(timeEntryList.values).to.have.lengthOf(togglTimeEntries.length);
+        const result = await repository.getEntries({from, to});
+
+        expect(result).to.be.an.instanceof(TimeEntryList);
+        expect(result.values).to.have.lengthOf(mockEntries.length);
+
+        const [calledWithArgs] = apiMock.getTimeEntries.getCall(0).args;
+        expect(calledWithArgs!.from!.toISOString()).to.deep.equal('2023-12-24T00:00:00.000Z');
+        expect(calledWithArgs!.to!.toISOString()).to.deep.equal('2023-12-27T00:00:00.000Z');
+
     });
-
-
 });

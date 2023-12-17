@@ -22,6 +22,10 @@ export class TimeEntryRepositoryDouble implements TimeEntryRepository {
     return new TimeEntryList([]);
   }
 
+  async getEntries() {
+    return new TimeEntryList([]);
+  }
+
   async getLastEntry() {
     return null;
   }

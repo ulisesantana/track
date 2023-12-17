@@ -7,6 +7,8 @@ export interface TimeEntryRepository {
 
   getCurrentWeekEntries(): Promise<TimeEntryList>;
 
+  getEntries(options?: {from?: Date, to?: Date}): Promise<TimeEntryList>;
+
   getLastEntry(): Promise<Nullable<TimeEntry>>;
 
   getTodayEntries(): Promise<TimeEntryList>;
