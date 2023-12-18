@@ -1,11 +1,10 @@
-/* eslint-disable camelcase */
-import {input, select} from '@inquirer/prompts';
 import {Command} from '@oclif/core'
 import path from "node:path";
 
 import {configFilename} from "../core";
 import {FileSystemDataSource, TogglApi, UserInfo, http} from "../infrastructure/data-sources";
 import {ConfigurationRepositoryImplementation} from "../infrastructure/repositories";
+import {inputTimeEntryDescription, inputToken, selectProject, selectWorkspace} from "../infrastructure/ui";
 
 export default class Setup extends Command {
     static description = 'Setup your config for track.'
@@ -14,59 +13,28 @@ export default class Setup extends Command {
         '<%= config.bin %> <%= command.id %>',
     ]
 
-    private static sortByName = (a: { name: string }, b: { name: string }) =>
-        a.name > b.name
-            ? 1
-            : a.name < b.name
-                ? -1
-                : 0
-
     static async setApiKey(configurationRepository: ConfigurationRepositoryImplementation) {
-        const apiKey = await input({message: 'Enter your name API Key:\n(For getting your Toggl API token you can go to https://track.toggl.com/profile and scroll to the bottom of your profile)\n'});
+        const apiKey = await inputToken();
         await configurationRepository.setApiToken(apiKey)
         return apiKey;
     }
 
-    static async setDefaultProject({clients, projects}: UserInfo, configurationRepository: ConfigurationRepositoryImplementation) {
-        const clientMap = new Map(clients.map(client => [client.id, client]))
-        const choices = projects
-            .filter(({active}) => active)
-            .sort(Setup.sortByName)
-            .map(project => ({
-                name: `${project.name} (${clientMap.get(project.client_id)?.name || 'No client'})`,
-                value: project.id
-            }))
-        const defaultProjectId = await select({
-            choices,
-            message: 'Select your default project',
-        });
-        await configurationRepository.setDefaultProjectId(defaultProjectId)
-        return choices.find(({value}) => value === defaultProjectId)?.name
+    static async setDefaultProject(userInfo: UserInfo, configurationRepository: ConfigurationRepositoryImplementation) {
+        const {id, name} = await selectProject(userInfo)
+        await configurationRepository.setDefaultProjectId(id)
+        return name
     }
 
     static async setDefaultTimeEntryDescription(configurationRepository: ConfigurationRepositoryImplementation) {
-        const defaultTimeEntry = await input({
-            default: 'Working',
-            message: 'Enter your default time entry description.',
-            validate: Boolean
-        });
+        const defaultTimeEntry = await inputTimeEntryDescription()
         await configurationRepository.setDefaultTimeEntry(defaultTimeEntry)
         return defaultTimeEntry
     }
 
-    static async setDefaultWorkspace({default_workspace_id, workspaces}: UserInfo, configurationRepository: ConfigurationRepositoryImplementation) {
-        workspaces.sort(Setup.sortByName)
-        const defaultWorkspace = workspaces.find(({id}) => id === default_workspace_id)!
-        const choices = [defaultWorkspace, ...workspaces.filter(({id}) => id !== default_workspace_id)].map(workspace => ({
-            name: workspace.name,
-            value: workspace.id
-        }))
-        const defaultWorkspaceId = await select({
-            choices,
-            message: 'Select your default workspace',
-        });
-        await configurationRepository.setDefaultWorkspaceId(defaultWorkspaceId)
-        return choices.find(({value}) => value === defaultWorkspaceId)?.name
+    static async setDefaultWorkspace(userInfo: UserInfo, configurationRepository: ConfigurationRepositoryImplementation) {
+        const {id, name} = await selectWorkspace(userInfo)
+        await configurationRepository.setDefaultWorkspaceId(id)
+        return name
     }
 
     public async run(): Promise<void> {
