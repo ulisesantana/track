@@ -56,7 +56,7 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
-  "name": "track",
+  "name": "@ulisesantana/track",
   "oclif": {
     "bin": "track",
     "commands": "./dist/commands",
@@ -93,5 +93,5 @@
     "version": "oclif readme && git add README.md"
   },
   "types": "dist/index.d.ts",
-  "version": "1.0.4"
+  "version": "1.0.3"
 }
