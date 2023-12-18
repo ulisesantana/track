@@ -1,4 +1,4 @@
-# track - A Toggl Track personal CLI
+# track - A [Toggl Track](https://track.toggl.com) personal CLI
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![codecov](https://codecov.io/gh/ulisesantana/track/graph/badge.svg?token=TlQWNm7TqJ)](https://codecov.io/gh/ulisesantana/track)
@@ -323,20 +323,3 @@ EXAMPLES
 
 _See code: [src/commands/yesterday.ts](https://github.com/ulisesantana/track/blob/v1.0.6/src/commands/yesterday.ts)_
 <!-- commandsstop -->
-
-![Use demonstration](docs/demo.png)
-
-## Install
-Add to your .zshenv:
-```env
-export TOGGL_API_TOKEN="email:password"
-export TOGGL_WORKSPACE_ID=1234567890
-export TOGGL_DEFAULT_TIME_ENTRY="Doing stuff"
-export TOGGL_DEFAULT_PROJECT=1234567890
-```
-
-Install in your shell (requires Python >= 3.9.6):
-```shell
-poetry build
-pip install dist/track-0.1.0.tar.gz
-```
