@@ -7,7 +7,7 @@ import {ConfigurationRepositoryImplementation} from "../../infrastructure/reposi
 import Setup from "../setup";
 
 export default class SetToken extends Command {
-    static description = 'Setup your Toggl Track API token for track CLI.'
+    static description = 'Setup your Toggl Track API token for track.'
 
     static examples = [
         '<%= config.bin %> <%= command.id %>',

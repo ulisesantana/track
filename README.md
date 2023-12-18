@@ -18,13 +18,16 @@ A CLI for Toggl Track
 USAGE
   $ track [COMMAND]
 
+TOPICS
+  set  Set your config individually.
+
 COMMANDS
   autocomplete  Display autocomplete installation instructions.
-  config        Get your config for track CLI.
+  config        Get your config for track.
   continue      Continue with last time entry.
   current       Show running time entry.
   help          Display help for track.
-  setup         Setup the CLI.
+  setup         Setup your config for track.
   start         Start a new time entry.
   stop          Stop running time entry.
   today         Show time entries run today.
@@ -35,6 +38,14 @@ COMMANDS
 # Commands
 <!-- commands -->
 * [`track config`](#track-config)
+* [`track continue`](#track-continue)
+* [`track current`](#track-current)
+* [`track setup`](#track-setup)
+* [`track start`](#track-start)
+* [`track stop`](#track-stop)
+* [`track today`](#track-today)
+* [`track week`](#track-week)
+* [`track yesterday`](#track-yesterday)
 
 ## `track config`
 
@@ -53,7 +64,23 @@ EXAMPLES
   $ track config
 ```
 
-_See code: [src/commands/config/config.ts](https://github.com/ulisesantana/track/blob/v0.0.0/src/commands/config/index.ts)_
+_See code: [src/commands/config.ts](https://github.com/ulisesantana/track/blob/v0.0.0/src/commands/config.ts)_
+
+
+Continue with last time entry.
+ 
+ ```
+USAGE
+  $ track continue
+_See code: [src/commands/current/current.ts]_
+
+## `track help`
+
+Display help for track.
+ 
+ ```
+USAGE
+  $ track help
+_See code: [src/commands/start/start.ts]_
 
 <!-- commandsstop -->
-

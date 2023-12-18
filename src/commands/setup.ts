@@ -8,7 +8,7 @@ import {FileSystemDataSource, TogglApi, UserInfo, http} from "../infrastructure/
 import {ConfigurationRepositoryImplementation} from "../infrastructure/repositories";
 
 export default class Setup extends Command {
-    static description = 'Setup your config for track CLI.'
+    static description = 'Setup your config for track.'
 
     static examples = [
         '<%= config.bin %> <%= command.id %>',
@@ -82,7 +82,7 @@ export default class Setup extends Command {
             await Setup.setDefaultProject(userInfo, configurationRepository);
             // Add your default time entry description
             await Setup.setDefaultTimeEntryDescription(configurationRepository);
-            this.log('Your config for track CLI has been setup.')
+            this.log('Your config for track has been setup.')
         } catch (error) {
             this.log(`There was an error trying to setting up your config. Detailed error:`)
             this.log(`${error}`)

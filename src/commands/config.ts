@@ -7,7 +7,7 @@ import {FileSystemDataSource} from "../infrastructure/data-sources";
 import {ConfigurationRepositoryImplementation} from "../infrastructure/repositories";
 
 export default class Config extends Command {
-  static description = 'Get your config for track CLI.'
+  static description = 'Get your config for track.'
 
   static examples = [
     '<%= config.bin %> <%= command.id %>',
@@ -18,7 +18,7 @@ export default class Config extends Command {
     const useCase = new GetConfigurationUseCase(configurationRepository)
     try {
       const config = await useCase.exec()
-      this.log('Your config for track CLI:')
+      this.log('Your config for track:')
       for (const [key, value] of Object.entries(config)) {
         this.log(` - ${key}: ${value}`)
       }

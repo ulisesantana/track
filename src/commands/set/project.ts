@@ -7,18 +7,11 @@ import {ConfigurationRepositoryImplementation} from "../../infrastructure/reposi
 import Setup from "../setup";
 
 export default class SetProject extends Command {
-    static description = 'Setup your default project for track CLI.'
+    static description = 'Setup your default project for track.'
 
     static examples = [
         '<%= config.bin %> <%= command.id %>',
     ]
-
-    private static sortByName = (a: { name: string }, b: { name: string }) =>
-        a.name > b.name
-            ? 1
-            : a.name < b.name
-                ? -1
-                : 0
 
     public async run(): Promise<void> {
         const configurationRepository = new ConfigurationRepositoryImplementation(new FileSystemDataSource(path.join(this.config.configDir, configFilename)))

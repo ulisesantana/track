@@ -7,7 +7,7 @@ import {ConfigurationRepositoryImplementation} from "../../infrastructure/reposi
 import Setup from "../setup";
 
 export default class SetDescription extends Command {
-    static description = 'Set your default time entry description for track CLI.'
+    static description = 'Set your default time entry description for track.'
 
     static examples = [
         '<%= config.bin %> <%= command.id %>',
