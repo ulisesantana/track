@@ -17,7 +17,7 @@ $ npm install -g track
 $ track COMMAND
 running command...
 $ track (--version)
-track/1.0.0 darwin-arm64 node-v20.8.0
+track/1.0.1 darwin-arm64 node-v20.8.0
 $ track --help [COMMAND]
 USAGE
   $ track COMMAND
@@ -88,7 +88,7 @@ EXAMPLES
   $ track config
 ```
 
-_See code: [src/commands/config.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/config.ts)_
+_See code: [src/commands/config.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/config.ts)_
 
 ## `track continue`
 
@@ -105,7 +105,7 @@ EXAMPLES
   $ track continue
 ```
 
-_See code: [src/commands/continue.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/continue.ts)_
+_See code: [src/commands/continue.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/continue.ts)_
 
 ## `track current`
 
@@ -122,7 +122,7 @@ EXAMPLES
   $ track current
 ```
 
-_See code: [src/commands/current.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/current.ts)_
+_See code: [src/commands/current.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/current.ts)_
 
 ## `track help [COMMANDS]`
 
@@ -159,7 +159,7 @@ EXAMPLES
   $ track set description
 ```
 
-_See code: [src/commands/set/description.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/description.ts)_
+_See code: [src/commands/set/description.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/set/description.ts)_
 
 ## `track set project`
 
@@ -176,7 +176,7 @@ EXAMPLES
   $ track set project
 ```
 
-_See code: [src/commands/set/project.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/project.ts)_
+_See code: [src/commands/set/project.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/set/project.ts)_
 
 ## `track set token`
 
@@ -193,7 +193,7 @@ EXAMPLES
   $ track set token
 ```
 
-_See code: [src/commands/set/token.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/token.ts)_
+_See code: [src/commands/set/token.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/set/token.ts)_
 
 ## `track set workspace`
 
@@ -210,7 +210,7 @@ EXAMPLES
   $ track set workspace
 ```
 
-_See code: [src/commands/set/workspace.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/workspace.ts)_
+_See code: [src/commands/set/workspace.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/set/workspace.ts)_
 
 ## `track setup`
 
@@ -227,7 +227,7 @@ EXAMPLES
   $ track setup
 ```
 
-_See code: [src/commands/setup.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/setup.ts)_
+_See code: [src/commands/setup.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/setup.ts)_
 
 ## `track start [DESCRIPTION]`
 
@@ -253,7 +253,7 @@ EXAMPLES
   $ track start Working -p "Your project"
 ```
 
-_See code: [src/commands/start.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/start.ts)_
+_See code: [src/commands/start.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/start.ts)_
 
 ## `track stop`
 
@@ -270,7 +270,7 @@ EXAMPLES
   $ track stop
 ```
 
-_See code: [src/commands/stop.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/stop.ts)_
+_See code: [src/commands/stop.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/stop.ts)_
 
 ## `track today`
 
@@ -287,7 +287,7 @@ EXAMPLES
   $ track today
 ```
 
-_See code: [src/commands/today.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/today.ts)_
+_See code: [src/commands/today.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/today.ts)_
 
 ## `track week`
 
@@ -304,7 +304,7 @@ EXAMPLES
   $ track week
 ```
 
-_See code: [src/commands/week.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/week.ts)_
+_See code: [src/commands/week.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/week.ts)_
 
 ## `track yesterday`
 
@@ -321,7 +321,7 @@ EXAMPLES
   $ track yesterday
 ```
 
-_See code: [src/commands/yesterday.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/yesterday.ts)_
+_See code: [src/commands/yesterday.ts](https://github.com/ulisesantana/track/blob/v1.0.1/src/commands/yesterday.ts)_
 <!-- commandsstop -->
 
 ![Use demonstration](docs/demo.png)
