@@ -20,15 +20,26 @@ describe('Toggl API should', () => {
         httpMock.reset()
     })
 
-    it('get user info', async () => {
-        const data = {a: 42, b: 'meh'}
-        httpMock
-            .onGet(`${TogglApi.baseUrl}/api/v9/me?with_related_data=true`)
-            .reply(200, data)
+    describe('get user info', () => {
+        it('successfully', async () => {
+            const data = {a: 42, b: 'meh'}
+            httpMock
+                .onGet(`${TogglApi.baseUrl}/api/v9/me?with_related_data=true`)
+                .reply(200, data)
 
-        const result = await TogglApi.getUserInfo('irrelevant', http)
+            const result = await TogglApi.getUserInfo('irrelevant', http)
 
-        expect(result).to.deep.equal(data)
+            expect(result).to.deep.equal(data)
+        })
+
+        it('throwing error', async () => {
+            httpMock
+                .onGet(`${TogglApi.baseUrl}/api/v9/me?with_related_data=true`)
+                .reply(500)
+
+
+            await expect(TogglApi.getUserInfo('irrelevant', http)).to.rejected
+        })
     })
 
     describe('create time entry', () => {
