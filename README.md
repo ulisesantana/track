@@ -53,7 +53,7 @@ EXAMPLES
   $ track config
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/ulisesantana/track/blob/v0.0.0/src/commands/config/index.ts)_
+_See code: [src/commands/config/config.ts](https://github.com/ulisesantana/track/blob/v0.0.0/src/commands/config/index.ts)_
 
 <!-- commandsstop -->
 

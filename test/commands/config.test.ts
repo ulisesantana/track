@@ -3,7 +3,7 @@ import {expect} from '@oclif/test'
 import path from "node:path";
 import {SinonSandbox, SinonStub, createSandbox} from "sinon";
 
-import {configuration} from "../../fixtures";
+import {configuration} from "../fixtures";
 
 describe('config command runs', () => {
   let sandbox: SinonSandbox

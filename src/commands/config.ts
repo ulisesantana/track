@@ -1,10 +1,10 @@
 import {Command} from '@oclif/core'
 import path from "node:path";
 
-import {GetConfigurationUseCase} from "../../application/cases";
-import {configFilename} from "../../core";
-import {FileSystemDataSource} from "../../infrastructure/data-sources";
-import {ConfigurationRepositoryImplementation} from "../../infrastructure/repositories";
+import {GetConfigurationUseCase} from "../application/cases";
+import {configFilename} from "../core";
+import {FileSystemDataSource} from "../infrastructure/data-sources";
+import {ConfigurationRepositoryImplementation} from "../infrastructure/repositories";
 
 export default class Config extends Command {
   static description = 'Get your config for track CLI.'

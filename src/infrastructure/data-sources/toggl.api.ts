@@ -2,18 +2,34 @@
 import {AxiosError, AxiosInstance} from "axios";
 
 import {Nullable} from "../../core";
-import {
-    AuthorizationError,
-    NotFoundError,
-    RequestError,
-    ServerError
-} from "../errors";
+import {AuthorizationError, NotFoundError, RequestError, ServerError} from "../errors";
 import {TogglProject, TogglTimeEntry} from "../types";
 
 export interface TogglApiParams {
     http: AxiosInstance
     token: string
     workspaceId: number
+}
+export interface UserInfo {
+    clients: Array<{
+        archived: boolean
+        at: string
+        id: number
+        name: string
+        wid: number
+    }>
+    default_workspace_id: number
+    projects: Array<{
+        active: boolean
+        client_id: number
+        id: number
+        name: string
+        workspace_id: number
+    }>
+    workspaces: Array<{
+        id: number
+        name: string
+    }>
 }
 
 export class TogglApi {
@@ -25,14 +41,29 @@ export class TogglApi {
     constructor({http, token, workspaceId}: TogglApiParams) {
         this.http = http
         this.workspaceId = workspaceId
-        this.basicHeaders = {
-            "Authorization": `Basic ${Buffer.from(token.includes(':') ? token : `${token}:api_token`).toString('base64')}`,
-            "content-type": "application/json",
+        this.basicHeaders = TogglApi.getHeaders(token)
+    }
+
+    static async getUserInfo(token: string, http: AxiosInstance): Promise<UserInfo> {
+        try {
+            const response = await http.get(`${TogglApi.baseUrl}/api/v9/me?with_related_data=true`, {
+                headers: TogglApi.getHeaders(token),
+            })
+            return response.data
+        } catch (error) {
+            TogglApi.handleError(error as AxiosError)
         }
     }
 
     private static formatDate(date: Date): string {
         return date.toISOString().split('T').at(0)!
+    }
+
+    private static getHeaders(token: string) {
+        return {
+            "Authorization": `Basic ${Buffer.from(token.includes(':') ? token : `${token}:api_token`).toString('base64')}`,
+            "content-type": "application/json",
+        };
     }
 
     private static handleError(error: AxiosError): never {
