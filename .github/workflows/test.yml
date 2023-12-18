@@ -6,4 +6,21 @@ on:
 
 jobs:
   unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Use Node.js 20.6.0
+          uses: actions/setup-node@v4
+          with:
+            node-version: 20.6.0
+        - name: 🛎️ Checkout
+          uses: actions/checkout@v3
+        - name: 📦 Install
+          run: npm i
+        - name: ✅ Unit test
+          run: npm t
+        - name: 📊 Upload coverage reports to Codecov
+          uses: codecov/codecov-action@v3
+          env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  e2e-tests:
     uses: oclif/github-workflows/.github/workflows/unitTest.yml@main
