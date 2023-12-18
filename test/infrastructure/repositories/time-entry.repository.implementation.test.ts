@@ -2,7 +2,7 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
 
-import {TimeEntryList, TimeHelper} from "../../../src/core";
+import {TimeEntryList} from "../../../src/core";
 import {TogglApi} from "../../../src/infrastructure/data-sources";
 import {TimeEntryRepositoryImplementation} from "../../../src/infrastructure/repositories";
 import {buildProject, buildTimeEntry, buildTogglProject, buildTogglTimeEntry} from "../../builders";
@@ -13,7 +13,7 @@ describe('TimeEntryRepositoryImplementation', () => {
 
     beforeEach(() => {
         apiMock = sinon.createStubInstance(TogglApi);
-        repository = new TimeEntryRepositoryImplementation(apiMock, new TimeHelper());
+        repository = new TimeEntryRepositoryImplementation(apiMock);
     });
 
     afterEach(() => {
@@ -39,7 +39,7 @@ describe('TimeEntryRepositoryImplementation', () => {
 
     it('should retrieve the current time entry when it exists', async () => {
         const mockProject = buildTogglProject();
-        const mockEntry = buildTogglTimeEntry({project_id: mockProject.id});
+        const mockEntry = buildTogglTimeEntry({project_id: mockProject.id, stop: ""});
         apiMock.getCurrentEntry.resolves(mockEntry);
         apiMock.getProjectById.resolves(mockProject);
 
@@ -144,7 +144,6 @@ describe('TimeEntryRepositoryImplementation', () => {
         expect(result).to.be.null;
     });
 
-
     it('should return entries from and to a given dates', async () => {
         const from = new Date('2023-12-24')
         const to = new Date('2023-12-26')
@@ -164,6 +163,61 @@ describe('TimeEntryRepositoryImplementation', () => {
         const [calledWithArgs] = apiMock.getTimeEntries.getCall(0).args;
         expect(calledWithArgs!.from!.toISOString()).to.deep.equal('2023-12-24T00:00:00.000Z');
         expect(calledWithArgs!.to!.toISOString()).to.deep.equal('2023-12-27T00:00:00.000Z');
+
+    });
+
+    it('should return entries from a given date', async () => {
+        const from = new Date('2023-12-24')
+        const mockProjects = [buildTogglProject(), buildTogglProject()];
+        const mockEntries = mockProjects.flatMap(p => [
+            buildTogglTimeEntry({project_id: p.id}),
+            buildTogglTimeEntry({project_id: p.id})
+        ])
+        apiMock.getTimeEntries.resolves(mockEntries);
+        apiMock.getProjects.resolves(mockProjects)
+
+        const result = await repository.getEntries({from});
+
+        expect(result).to.be.an.instanceof(TimeEntryList);
+        expect(result.values).to.have.lengthOf(mockEntries.length);
+
+        const [calledWithArgs] = apiMock.getTimeEntries.getCall(0).args;
+        expect(calledWithArgs!.from!.toISOString()).to.includes(from.toISOString().split('T')[0])
+        expect(calledWithArgs!.to!).to.be.undefined
+    });
+
+    it('should return entries to a given date', async () => {
+        const to = new Date('2023-12-24')
+        const mockProjects = [buildTogglProject(), buildTogglProject()];
+        const mockEntries = mockProjects.flatMap(p => [
+            buildTogglTimeEntry({project_id: p.id}),
+            buildTogglTimeEntry({project_id: p.id})
+        ])
+        apiMock.getTimeEntries.resolves(mockEntries);
+        apiMock.getProjects.resolves(mockProjects)
+
+        const result = await repository.getEntries({to});
+
+        expect(result).to.be.an.instanceof(TimeEntryList);
+        expect(result.values).to.have.lengthOf(mockEntries.length);
+
+        const [calledWithArgs] = apiMock.getTimeEntries.getCall(0).args;
+        expect(calledWithArgs!.from).to.be.undefined
+        expect(calledWithArgs!.to!.toISOString()).to.includes(to.toISOString().split('T')[0])
+    });
+
+    it('should return an empty list if there are no entries for the given date interval', async () => {
+        apiMock.getTimeEntries.resolves([]);
+
+        const result = await repository.getEntries();
+
+        expect(result).to.be.an.instanceof(TimeEntryList);
+        expect(result.values).to.have.lengthOf(0);
+        expect(apiMock.getProjects.notCalled).to.be.true
+
+        const [calledWithArgs] = apiMock.getTimeEntries.getCall(0).args;
+        expect(calledWithArgs!.from!).to.be.undefined
+        expect(calledWithArgs!.to!).to.be.undefined
 
     });
 });

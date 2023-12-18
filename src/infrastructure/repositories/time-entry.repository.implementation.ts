@@ -5,12 +5,14 @@ import {TogglApi} from "../data-sources";
 import {TogglProject, TogglTimeEntry} from "../types";
 
 export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
-    constructor(private readonly api: TogglApi, private readonly time = new TimeHelper()) {
+    private readonly time = new TimeHelper()
+
+    constructor(private readonly api: TogglApi) {
     }
 
-    static calcDuration(entry: TogglTimeEntry): number {
-        const start = new Date(entry.start!)
-        const stop = entry.stop ? new Date(entry.stop) : new Date()
+    static calcDuration(startISOString: string): number {
+        const start = new Date(startISOString)
+        const stop = new Date()
         const duration = stop.getTime() - start.getTime()
         return Math.floor(duration / 1000)
     }
@@ -18,21 +20,18 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
     static mapToTimeEntry(entry: TogglTimeEntry, project: Nullable<Project>): TimeEntry {
         return new TimeEntry({
             description: entry.description,
-            duration: entry.start && entry.stop ? new Duration(entry.duration) : new Duration(TimeEntryRepositoryImplementation.calcDuration(entry)),
+            duration: entry.start && entry.stop ? new Duration(entry.duration) : new Duration(TimeEntryRepositoryImplementation.calcDuration(entry.start!)),
             id: entry.id,
             project: project ? new Project(project.id, project.name) : new NullProject(),
         })
     }
 
     static mapToTimeEntryList(entries: Array<TogglTimeEntry>, projects: Array<TogglProject>) {
-        const projectsId = new Set(entries.map(({project_id}) => project_id))
         const projectDictionary = projects.reduce(
-            (dict, project) => projectsId.has(project.id)
-                ? {
-                    ...dict,
-                    [project.id]: project
-                }
-                : dict,
+            (dict, project) => ({
+                ...dict,
+                [project.id]: project
+            }),
             {} as Record<number, TogglProject>
         )
 
@@ -85,7 +84,7 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
         return TimeEntryRepositoryImplementation.mapToTimeEntryList(entries, projects)
     }
 
-    async getEntries({from, to}: {from?: Date, to?: Date} = {}): Promise<TimeEntryList> {
+    async getEntries({from, to}: { from?: Date, to?: Date } = {}): Promise<TimeEntryList> {
         from && from.setHours(0, 0, 0, 0)
         to && to.setHours(0, 0, 0, 0) && to.setDate(to.getDate() + 1)
         const entries = await this.api.getTimeEntries({from, to})
