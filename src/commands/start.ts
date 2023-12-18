@@ -14,7 +14,8 @@ export default class Start extends TrackCommand {
 
     static description = 'Start a new time entry.'
     static examples = [
-        '<%= config.bin %> <%= command.id %>',
+        '<%= config.bin %> <%= command.id %> -i',
+        '<%= config.bin %> <%= command.id %> Working -p "Your project"',
     ]
 
     static flags = {
