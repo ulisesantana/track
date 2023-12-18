@@ -56,7 +56,7 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
-  "name": "@ulisesantana/track",
+  "name": "track",
   "oclif": {
     "bin": "track",
     "commands": "./dist/commands",
