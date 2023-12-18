@@ -1,8 +1,9 @@
 # track CLI
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![CircleCI](https://circleci.com/gh/oclif/hello-world/tree/main.svg?style=shield)](https://circleci.com/gh/oclif/hello-world/tree/main)
-[![GitHub license](https://img.shields.io/github/license/oclif/hello-world)](https://github.com/oclif/hello-world/blob/main/LICENSE)
+[![codecov](https://codecov.io/gh/ulisesantana/track/graph/badge.svg?token=TlQWNm7TqJ)](https://codecov.io/gh/ulisesantana/track)
+[![tests](https://github.com/ulisesantana/track/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/ulisesantana/track/actions/workflows/test.yml)
+[![GitHub license](https://img.shields.io/github/license/ulisesantana/track)](https://github.com/ulisesantana/track/blob/main/LICENSE)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -40,6 +41,10 @@ COMMANDS
 * [`track config`](#track-config)
 * [`track continue`](#track-continue)
 * [`track current`](#track-current)
+* [`track set description`](#track-set-description)
+* [`track set project`](#track-set-project)
+* [`track set token`](#track-set-token)
+* [`track set workspace`](#track-set-workspace)
 * [`track setup`](#track-setup)
 * [`track start`](#track-start)
 * [`track stop`](#track-stop)
@@ -66,21 +71,87 @@ EXAMPLES
 
 _See code: [src/commands/config.ts](https://github.com/ulisesantana/track/blob/v0.0.0/src/commands/config.ts)_
 
+## `track continue`
 
 Continue with last time entry.
  
- ```
-USAGE
-  $ track continue
 _See code: [src/commands/current/current.ts]_
 
-## `track help`
+## `track current`
+Description
 
-Display help for track.
- 
- ```
-USAGE
-  $ track help
-_See code: [src/commands/start/start.ts]_
+Usage 
+
+See code 
+
+## `track set description`
+Description
+
+Usage 
+
+See code 
+
+## `track set project`
+Description
+
+Usage 
+
+See code 
+
+## `track set token`
+Description
+
+Usage 
+
+See code 
+
+## `track set workspace`
+Description
+
+Usage 
+
+See code 
+
+## `track setup`
+Description
+
+Usage 
+
+See code 
+
+## `track start`
+Description
+
+Usage 
+
+See code 
+
+## `track stop`
+Description
+
+Usage 
+
+See code 
+
+## `track today`
+Description
+
+Usage 
+
+See code 
+
+## `track week`
+Description
+
+Usage 
+
+See code 
+
+## `track yesterday`
+Description
+
+Usage 
+
+See code 
 
 <!-- commandsstop -->
