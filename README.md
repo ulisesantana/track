@@ -13,11 +13,11 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g track
+$ npm install -g @ulisesantana/track
 $ track COMMAND
 running command...
 $ track (--version)
-track/1.0.4 darwin-arm64 node-v20.8.0
+@ulisesantana/track/1.0.4 darwin-arm64 node-v20.8.0
 $ track --help [COMMAND]
 USAGE
   $ track COMMAND
