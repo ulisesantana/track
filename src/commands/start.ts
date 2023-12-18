@@ -27,13 +27,13 @@ export default class Start extends TrackCommand {
         if (!config.defaultTimeEntry && !args.description) {
             this.error('Missing time entry description argument. ' +
                 'You can add a default time entry description with ' +
-                '\'track config set --description "You default description of choice"\'.')
+                '\'track set description\'.')
         }
 
         if (!config.projectId && !flags.project) {
             this.error('Missing project flag for the time entry. ' +
                 'You can add a default project ID with' +
-                ' \'track config set project\'.')
+                ' \'track set project\'.')
         }
 
         const togglAPI = new TogglApi({
