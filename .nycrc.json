@@ -10,6 +10,7 @@
     "test/**/*.ts",
     "src/commands",
     "src/infrastructure/track-command.ts",
+    "src/infrastructure/ui",
     "src/hooks"
   ],
   "extends": "@istanbuljs/nyc-config-typescript",
