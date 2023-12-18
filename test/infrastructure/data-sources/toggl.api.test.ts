@@ -2,14 +2,14 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-chai.use(chaiAsPromised);
-const {expect} = chai;
-
 import {http} from "../../../dist/infrastructure/data-sources"; // dist directory is not an error. Is due to how commands are tested based on transpiled code.
 import {TogglApi} from "../../../src/infrastructure/data-sources";
 import {AuthorizationError, NotFoundError, RequestError, ServerError} from "../../../src/infrastructure/errors";
 import {buildTogglProject, buildTogglTimeEntry} from "../../builders";
 import httpMock from "../../http.mock";
+
+chai.use(chaiAsPromised);
+const {expect} = chai;
 
 describe('Toggl API should', () => {
     const workspaceId = 42;
@@ -18,6 +18,17 @@ describe('Toggl API should', () => {
 
     afterEach(() => {
         httpMock.reset()
+    })
+
+    it('get user info', async () => {
+        const data = {a: 42, b: 'meh'}
+        httpMock
+            .onGet(`${TogglApi.baseUrl}/api/v9/me?with_related_data=true`)
+            .reply(200, data)
+
+        const result = await TogglApi.getUserInfo('irrelevant', http)
+
+        expect(result).to.deep.equal(data)
     })
 
     describe('create time entry', () => {
@@ -201,6 +212,7 @@ describe('Toggl API should', () => {
 
             expect(result).to.deep.equal(entries)
         })
+
         it('with from date', async () => {
             const from = new Date('2023-05-15')
             const to = new Date()
@@ -262,7 +274,7 @@ describe('Toggl API should', () => {
     })
 
     describe('update time entry', () => {
-            const entry = buildTogglTimeEntry()
+        const entry = buildTogglTimeEntry()
         it('successfully', async () => {
             httpMock
                 .onPut(`${TogglApi.baseUrl}/api/v9/workspaces/${workspaceId}/time_entries/${entry.id}`)
