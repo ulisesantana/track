@@ -27,7 +27,7 @@ describe('ContinueWithLastTimeEntryUseCase', () => {
 
   it('should continue with last time entry when there is a last entry', async () => {
     const lastEntry = buildTimeEntry({ description: "Test Description", duration: 60});
-    const newEntry = new TimeEntry({...lastEntry, duration: new Duration(-1)})
+    const newEntry = new TimeEntry({...lastEntry, duration: new Duration(0)})
     const continueTime = new Date();
     mockTimeEntryRepository.getLastEntry.returns(Promise.resolve(lastEntry));
     mockTimeEntryRepository.createEntry.returns(Promise.resolve(newEntry));

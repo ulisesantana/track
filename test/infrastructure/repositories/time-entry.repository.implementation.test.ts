@@ -29,7 +29,12 @@ describe('TimeEntryRepositoryImplementation', () => {
         const result = await repository.createEntry(entry, date);
 
         expect(result).to.be.deep.equal(entry);
-        sinon.assert.calledOnceWithExactly(apiMock.createTimeEntry, mockTogglEntry, date);
+        sinon.assert.calledOnceWithExactly(apiMock.createTimeEntry, {
+            description: mockTogglEntry.description,
+            duration: mockTogglEntry.duration,
+            id: mockTogglEntry.id,
+            project_id: mockTogglEntry.project_id
+        }, date);
     });
 
     it('should retrieve the current time entry when it exists', async () => {

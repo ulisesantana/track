@@ -5,7 +5,7 @@ import {Duration} from "../../src/core";
 describe('Duration', () => {
     it('should initialize with the default duration if no value is provided', () => {
         const duration = new Duration();
-        expect(duration.value).to.be.closeTo(Date.now() / 1000, 2);
+        expect(duration.value).to.be.equal(0);
     });
 
     it('should initialize with the provided value', () => {
@@ -38,11 +38,6 @@ describe('Duration', () => {
     it('should return the correct string representation of the duration', () => {
         const duration = new Duration(3661); // 1 hour, 1 minute, 1 second
         expect(duration.toString()).to.equal('01h 01m 01s');
-    });
-
-    it('should handle negative durations correctly', () => {
-        const duration = new Duration(-100);
-        expect(duration.value).to.be.closeTo(Date.now() / 1000, 101);
     });
 
 });

@@ -17,11 +17,6 @@ describe('TimeEntry', () => {
 
   it('should return the correct string representation', () => {
     const timeEntry = new TimeEntry({description: "Prueba de descripción", duration: new Duration(3600), id: 1, project})
-    let expectedStr = `01h 00m 00s - ${timeEntry.description} (${project.name})`;
-    expect(timeEntry.toString()).to.equal(expectedStr);
-
-    timeEntry.duration.value = (Math.floor(Date.now() / 1000) - 3665) * -1;
-    expectedStr = `01h 01m 05s - ${timeEntry.description} (${project.name})`;
-    expect(timeEntry.toString()).to.equal(expectedStr);
+    expect(timeEntry.toString()).to.equal(`01h 00m 00s - ${timeEntry.description} (${project.name})`);
   });
 });

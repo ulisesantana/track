@@ -8,10 +8,17 @@ export class TimeEntryRepositoryImplementation implements TimeEntryRepository {
     constructor(private readonly api: TogglApi, private readonly time = new TimeHelper()) {
     }
 
+    static calcDuration(entry: TogglTimeEntry): number {
+        const start = new Date(entry.start!)
+        const stop = entry.stop ? new Date(entry.stop) : new Date()
+        const duration = stop.getTime() - start.getTime()
+        return Math.floor(duration / 1000)
+    }
+
     static mapToTimeEntry(entry: TogglTimeEntry, project: Nullable<Project>): TimeEntry {
         return new TimeEntry({
             description: entry.description,
-            duration: new Duration(entry.duration),
+            duration: entry.start && entry.stop ? new Duration(entry.duration) : new Duration(TimeEntryRepositoryImplementation.calcDuration(entry)),
             id: entry.id,
             project: project ? new Project(project.id, project.name) : new NullProject(),
         })

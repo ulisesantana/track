@@ -1,7 +1,7 @@
 import {TimeHelper} from "./time-helper";
 
 export class Duration {
-    constructor(private duration: number = -1) {
+    constructor(private duration: number = 0) {
     }
 
     private static isDuration(duration: Duration | number): duration is Duration {
@@ -9,10 +9,6 @@ export class Duration {
     }
 
     get value(): number {
-        if (this.duration < 0) {
-            return Math.floor(Date.now() / 1000) + this.duration;
-        }
-
         return this.duration;
     }
 
