@@ -6,6 +6,7 @@
 [![GitHub license](https://img.shields.io/github/license/ulisesantana/track)](https://github.com/ulisesantana/track/blob/main/LICENSE)
 
 <!-- toc -->
+* [track - A Toggl Track personal CLI](#track---a-toggl-track-personal-cli)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
@@ -13,147 +14,314 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g track
-$ track help
-A CLI for Toggl Track
-
+$ track COMMAND
+running command...
+$ track (--version)
+track/1.0.0 darwin-arm64 node-v20.8.0
+$ track --help [COMMAND]
 USAGE
-  $ track [COMMAND]
-
-TOPICS
-  set  Set your config individually.
-
-COMMANDS
-  autocomplete  Display autocomplete installation instructions.
-  config        Get your config for track.
-  continue      Continue with last time entry.
-  current       Show running time entry.
-  help          Display help for track.
-  setup         Setup your config for track.
-  start         Start a new time entry.
-  stop          Stop running time entry.
-  today         Show time entries run today.
-  week          Show time entries run current week.
-  yesterday     Show time entries run yesterday.
+  $ track COMMAND
+...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`track autocomplete [SHELL]`](#track-autocomplete-shell)
 * [`track config`](#track-config)
 * [`track continue`](#track-continue)
 * [`track current`](#track-current)
+* [`track help [COMMANDS]`](#track-help-commands)
 * [`track set description`](#track-set-description)
 * [`track set project`](#track-set-project)
 * [`track set token`](#track-set-token)
 * [`track set workspace`](#track-set-workspace)
 * [`track setup`](#track-setup)
-* [`track start`](#track-start)
+* [`track start [DESCRIPTION]`](#track-start-description)
 * [`track stop`](#track-stop)
 * [`track today`](#track-today)
 * [`track week`](#track-week)
 * [`track yesterday`](#track-yesterday)
 
-## `track config`
+## `track autocomplete [SHELL]`
 
-Show your current config
+Display autocomplete installation instructions.
 
 ```
-Get your config for track CLI.
+USAGE
+  $ track autocomplete [SHELL] [-r]
 
+ARGUMENTS
+  SHELL  (zsh|bash|powershell) Shell type
+
+FLAGS
+  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
+
+DESCRIPTION
+  Display autocomplete installation instructions.
+
+EXAMPLES
+  $ track autocomplete
+
+  $ track autocomplete bash
+
+  $ track autocomplete zsh
+
+  $ track autocomplete powershell
+
+  $ track autocomplete --refresh-cache
+```
+
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.0.3/src/commands/autocomplete/index.ts)_
+
+## `track config`
+
+Get your config for track.
+
+```
 USAGE
   $ track config
 
 DESCRIPTION
-  Get your config for track CLI.
+  Get your config for track.
 
 EXAMPLES
   $ track config
 ```
 
-_See code: [src/commands/config.ts](https://github.com/ulisesantana/track/blob/v0.0.0/src/commands/config.ts)_
+_See code: [src/commands/config.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/config.ts)_
 
 ## `track continue`
 
 Continue with last time entry.
- 
-_See code: [src/commands/current/current.ts]_
+
+```
+USAGE
+  $ track continue
+
+DESCRIPTION
+  Continue with last time entry.
+
+EXAMPLES
+  $ track continue
+```
+
+_See code: [src/commands/continue.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/continue.ts)_
 
 ## `track current`
-Description
 
-Usage 
+Show running time entry.
 
-See code 
+```
+USAGE
+  $ track current
+
+DESCRIPTION
+  Show running time entry.
+
+EXAMPLES
+  $ track current
+```
+
+_See code: [src/commands/current.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/current.ts)_
+
+## `track help [COMMANDS]`
+
+Display help for track.
+
+```
+USAGE
+  $ track help [COMMANDS] [-n]
+
+ARGUMENTS
+  COMMANDS  Command to show help for.
+
+FLAGS
+  -n, --nested-commands  Include all nested commands in the output.
+
+DESCRIPTION
+  Display help for track.
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v5.2.20/src/commands/help.ts)_
 
 ## `track set description`
-Description
 
-Usage 
+Set your default time entry description for track.
 
-See code 
+```
+USAGE
+  $ track set description
+
+DESCRIPTION
+  Set your default time entry description for track.
+
+EXAMPLES
+  $ track set description
+```
+
+_See code: [src/commands/set/description.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/description.ts)_
 
 ## `track set project`
-Description
 
-Usage 
+Setup your default project for track.
 
-See code 
+```
+USAGE
+  $ track set project
+
+DESCRIPTION
+  Setup your default project for track.
+
+EXAMPLES
+  $ track set project
+```
+
+_See code: [src/commands/set/project.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/project.ts)_
 
 ## `track set token`
-Description
 
-Usage 
+Setup your Toggl Track API token for track.
 
-See code 
+```
+USAGE
+  $ track set token
+
+DESCRIPTION
+  Setup your Toggl Track API token for track.
+
+EXAMPLES
+  $ track set token
+```
+
+_See code: [src/commands/set/token.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/token.ts)_
 
 ## `track set workspace`
-Description
 
-Usage 
+Setup your default workspace for track.
 
-See code 
+```
+USAGE
+  $ track set workspace
+
+DESCRIPTION
+  Setup your default workspace for track.
+
+EXAMPLES
+  $ track set workspace
+```
+
+_See code: [src/commands/set/workspace.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/set/workspace.ts)_
 
 ## `track setup`
-Description
 
-Usage 
+Setup your config for track.
 
-See code 
+```
+USAGE
+  $ track setup
 
-## `track start`
-Description
+DESCRIPTION
+  Setup your config for track.
 
-Usage 
+EXAMPLES
+  $ track setup
+```
 
-See code 
+_See code: [src/commands/setup.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/setup.ts)_
+
+## `track start [DESCRIPTION]`
+
+Start a new time entry.
+
+```
+USAGE
+  $ track start [DESCRIPTION] [-i] [-p <value>]
+
+ARGUMENTS
+  DESCRIPTION  Time entry description.
+
+FLAGS
+  -i, --interactive      Create time entry interactively
+  -p, --project=<value>  Project ID or Project name
+
+DESCRIPTION
+  Start a new time entry.
+
+EXAMPLES
+  $ track start -i
+
+  $ track start Working -p "Your project"
+```
+
+_See code: [src/commands/start.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/start.ts)_
 
 ## `track stop`
-Description
 
-Usage 
+Stop running time entry.
 
-See code 
+```
+USAGE
+  $ track stop
+
+DESCRIPTION
+  Stop running time entry.
+
+EXAMPLES
+  $ track stop
+```
+
+_See code: [src/commands/stop.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/stop.ts)_
 
 ## `track today`
-Description
 
-Usage 
+Show time entries run today.
 
-See code 
+```
+USAGE
+  $ track today
+
+DESCRIPTION
+  Show time entries run today.
+
+EXAMPLES
+  $ track today
+```
+
+_See code: [src/commands/today.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/today.ts)_
 
 ## `track week`
-Description
 
-Usage 
+Show time entries run current week.
 
-See code 
+```
+USAGE
+  $ track week
+
+DESCRIPTION
+  Show time entries run current week.
+
+EXAMPLES
+  $ track week
+```
+
+_See code: [src/commands/week.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/week.ts)_
 
 ## `track yesterday`
-Description
 
-Usage 
+Show time entries run yesterday.
 
-See code 
+```
+USAGE
+  $ track yesterday
 
+DESCRIPTION
+  Show time entries run yesterday.
+
+EXAMPLES
+  $ track yesterday
+```
+
+_See code: [src/commands/yesterday.ts](https://github.com/ulisesantana/track/blob/v1.0.0/src/commands/yesterday.ts)_
 <!-- commandsstop -->
 
 ![Use demonstration](docs/demo.png)
