@@ -1,6 +1,12 @@
 import {Command} from '@oclif/core'
 import path from "node:path";
 
+import {
+    SetApiTokenUseCase,
+    SetDefaultProjectUseCase,
+    SetDefaultTimeEntryDescriptionUseCase,
+    SetDefaultWorkspaceIdUseCase
+} from "../application/cases";
 import {configFilename} from "../core";
 import {FileSystemDataSource, TogglApi, UserInfo, http} from "../infrastructure/data-sources";
 import {ConfigurationRepositoryImplementation} from "../infrastructure/repositories";
@@ -15,25 +21,25 @@ export default class Setup extends Command {
 
     static async setApiKey(configurationRepository: ConfigurationRepositoryImplementation) {
         const apiKey = await inputToken();
-        await configurationRepository.setApiToken(apiKey)
+        await new SetApiTokenUseCase(configurationRepository).exec(apiKey)
         return apiKey;
     }
 
     static async setDefaultProject(userInfo: UserInfo, configurationRepository: ConfigurationRepositoryImplementation) {
         const {id, name} = await selectProject(userInfo)
-        await configurationRepository.setDefaultProjectId(id)
+        await new SetDefaultProjectUseCase(configurationRepository).exec(id)
         return name
     }
 
     static async setDefaultTimeEntryDescription(configurationRepository: ConfigurationRepositoryImplementation) {
         const defaultTimeEntry = await inputTimeEntryDescription()
-        await configurationRepository.setDefaultTimeEntry(defaultTimeEntry)
+        await new SetDefaultTimeEntryDescriptionUseCase(configurationRepository).exec(defaultTimeEntry)
         return defaultTimeEntry
     }
 
     static async setDefaultWorkspace(userInfo: UserInfo, configurationRepository: ConfigurationRepositoryImplementation) {
         const {id, name} = await selectWorkspace(userInfo)
-        await configurationRepository.setDefaultWorkspaceId(id)
+        await new SetDefaultWorkspaceIdUseCase(configurationRepository).exec(id)
         return name
     }
 
