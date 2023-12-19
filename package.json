@@ -86,11 +86,11 @@
     "lint:fix": "npm run lint -- --fix",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "npm run lint",
+    "postversion": "npm publish --access public",
     "prepack": "npm run build && oclif manifest && oclif readme",
     "prepare": "npm run build",
-    "tag": "TAG=v$(node -pe \"require('./package.json').version\"); git commit -am \"feat(version): 🔖 $TAG\" && git tag $TAG && git push --tags",
     "test": "tsc && nyc mocha --forbid-only --serial --bail \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "version": "oclif readme && git add README.md && git push --tags"
   },
   "types": "dist/index.d.ts",
   "version": "1.0.7"
