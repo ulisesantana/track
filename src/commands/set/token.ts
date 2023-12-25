@@ -17,7 +17,7 @@ export default class SetToken extends Command {
         const configurationRepository = new ConfigurationRepositoryImplementation(new FileSystemDataSource(path.join(this.config.configDir, configFilename)))
         try {
             const token = await Setup.setApiKey(configurationRepository)
-            this.log(`Your Toggl Track token has been updated to "${token}".`)
+            this.log(`Your Toggl Track token has been updated to: "${token}".`)
         } catch (error) {
             this.log(`There was an error trying to setting up your config. Detailed error:`)
             this.log(`${error}`)

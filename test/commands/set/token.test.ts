@@ -31,7 +31,7 @@ describe('set token command runs', () => {
     })
 
     it('set Toggl Track token', async () => {
-        const expectedOutput = `Your Toggl Track token has been updated to "${mockToken}".`;
+        const expectedOutput = `Your Toggl Track token has been updated to: "${mockToken}".`;
 
         await config.runCommand("set:token")
 
